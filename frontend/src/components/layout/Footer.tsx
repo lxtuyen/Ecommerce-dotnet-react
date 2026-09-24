@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Truck, ShieldCheck, Clock, RefreshCw, Heart } from 'lucide-react';
+import { ShoppingBag, Truck, ShieldCheck, Clock, RefreshCw } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   return (
@@ -65,9 +65,6 @@ export const Footer: React.FC = () => {
             <p className="text-sm leading-relaxed text-slate-400 max-w-sm">
               Your premier destination for high-end smartphones, ultra-portable laptops, audiophile gear, and cutting-edge tech accessories.
             </p>
-            <div className="pt-2 text-xs text-slate-500">
-              Powered by ASP.NET Core 8 LTS &amp; React + Tailwind CSS
-            </div>
           </div>
 
           <div>
@@ -118,11 +115,8 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <div className="mt-12 pt-8 border-t border-slate-800 flex items-center justify-between text-xs text-slate-500">
           <p>© {new Date().getFullYear()} TechVault Inc. All rights reserved.</p>
-          <p className="flex items-center gap-1">
-            Built with <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500 inline" /> for modern e-commerce.
-          </p>
         </div>
       </div>
     </footer>
