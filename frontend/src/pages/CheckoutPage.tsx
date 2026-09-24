@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '@/stores/useCartStore';
 import { useAuthStore } from '@/stores/useAuthStore';
@@ -17,7 +17,13 @@ import {
 export const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
   const { items, getTotalPrice, clearCart } = useCartStore();
-  const { user } = useAuthStore();
+  const { user, isAuthenticated } = useAuthStore();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login?redirect=/checkout');
+    }
+  }, [isAuthenticated, navigate]);
 
   const [formData, setFormData] = useState({
     name: user?.name || '',
@@ -29,6 +35,16 @@ export const CheckoutPage: React.FC = () => {
     notes: '',
   });
 
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        name: prev.name || user.name || '',
+        email: prev.email || user.email || '',
+      }));
+    }
+  }, [user]);
+
   const [paymentMethod, setPaymentMethod] = useState<'Credit Card' | 'QR Pay' | 'COD'>(
     'Credit Card'
   );
@@ -38,6 +54,10 @@ export const CheckoutPage: React.FC = () => {
   const subtotal = getTotalPrice();
   const shippingFee = subtotal >= 150 ? 0 : 9.99;
   const grandTotal = subtotal + shippingFee;
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   if (items.length === 0) {
     return (

@@ -2,12 +2,14 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
 import { useCartStore } from '@/stores/useCartStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 import { formatCurrency } from '@/utils/formatters';
 
 const FREE_SHIPPING_THRESHOLD = 150;
 
 export const CartDrawer: React.FC = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuthStore();
   const {
     items,
     isDrawerOpen,
@@ -26,7 +28,11 @@ export const CartDrawer: React.FC = () => {
 
   const handleProceedToCheckout = () => {
     closeDrawer();
-    navigate('/checkout');
+    if (!isAuthenticated) {
+      navigate('/login?redirect=/checkout');
+    } else {
+      navigate('/checkout');
+    }
   };
 
   return (

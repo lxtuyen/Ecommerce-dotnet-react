@@ -13,8 +13,18 @@ public static class DbInitializer
     {
         try
         {
-            // Auto create tables if they do not exist
-            await context.Database.EnsureCreatedAsync();
+            // Check if tables exist in Supabase, if not execute DDL script
+            try
+            {
+                await context.Users.AnyAsync();
+            }
+            catch
+            {
+                Console.WriteLine("[DbInitializer] Tables not found. Creating tables on Supabase...");
+                var createScript = context.Database.GenerateCreateScript();
+                await context.Database.ExecuteSqlRawAsync(createScript);
+                Console.WriteLine("[DbInitializer] Tables created successfully on Supabase!");
+            }
 
             // 1. Seed Users (Admin & Customer)
             if (!await context.Users.AnyAsync())

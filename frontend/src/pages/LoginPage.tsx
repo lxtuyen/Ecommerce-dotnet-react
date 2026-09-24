@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { authApi } from '@/services/api';
-import { Lock, Mail, Loader2, ShoppingBag, Shield, User } from 'lucide-react';
+import { Lock, Mail, Loader2, ShoppingBag, Shield, User, Info } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectParam = searchParams.get('redirect');
   const { setAuth } = useAuthStore();
 
   const [email, setEmail] = useState('');
@@ -22,7 +24,9 @@ export const LoginPage: React.FC = () => {
       const res = await authApi.login({ email, password });
       if (res.success && res.data) {
         setAuth(res.data, res.data.token || '');
-        if (res.data.role === 'Admin') {
+        if (redirectParam) {
+          navigate(redirectParam);
+        } else if (res.data.role === 'Admin') {
           navigate('/admin');
         } else {
           navigate('/');
@@ -85,6 +89,15 @@ export const LoginPage: React.FC = () => {
 
         {/* Form Card */}
         <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 shadow-sm">
+          {redirectParam === '/checkout' && (
+            <div className="mb-4 p-3.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-start gap-2.5 text-indigo-700 dark:text-indigo-300 text-xs">
+              <Info className="w-4 h-4 shrink-0 mt-0.5 text-indigo-600 dark:text-indigo-400" />
+              <span>
+                <strong>Đăng nhập để thanh toán:</strong> Vui lòng đăng nhập tài khoản của bạn để tiếp tục đặt hàng (hoặc dùng 1-Click tài khoản Khách hàng / Admin phía trên).
+              </span>
+            </div>
+          )}
+
           {errorMsg && (
             <div className="mb-4 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 text-xs font-semibold">
               {errorMsg}
@@ -144,7 +157,10 @@ export const LoginPage: React.FC = () => {
 
           <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 text-center text-xs text-slate-500">
             Don&apos;t have an account yet?{' '}
-            <Link to="/register" className="font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
+            <Link
+              to={redirectParam ? `/register?redirect=${encodeURIComponent(redirectParam)}` : '/register'}
+              className="font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
+            >
               Create one now
             </Link>
           </div>

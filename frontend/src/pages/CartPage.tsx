@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCartStore } from '@/stores/useCartStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 import { formatCurrency } from '@/utils/formatters';
 import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, Tag, ArrowLeft } from 'lucide-react';
 
 export const CartPage: React.FC = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuthStore();
   const { items, updateQuantity, removeItem, clearCart, getTotalPrice } = useCartStore();
   const [promoCode, setPromoCode] = useState('');
   const [discountPercent, setDiscountPercent] = useState(0);
@@ -214,7 +216,13 @@ export const CartPage: React.FC = () => {
             </div>
 
             <button
-              onClick={() => navigate('/checkout')}
+              onClick={() => {
+                if (!isAuthenticated) {
+                  navigate('/login?redirect=/checkout');
+                } else {
+                  navigate('/checkout');
+                }
+              }}
               className="w-full py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-xl shadow-indigo-500/25 flex items-center justify-center gap-2 transition-all"
             >
               <span>Proceed to Checkout</span>

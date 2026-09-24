@@ -23,6 +23,13 @@ public class OrderService : IOrderService
         var response = new ServiceResponse<GetOrderDTO>();
         try
         {
+            if (userId == null || userId <= 0)
+            {
+                response.Success = false;
+                response.Message = "You must be signed in to complete checkout.";
+                return response;
+            }
+
             if (request.Items == null || !request.Items.Any())
             {
                 response.Success = false;
@@ -34,7 +41,7 @@ public class OrderService : IOrderService
 
             var order = new Order
             {
-                UserId = userId ?? 0,
+                UserId = userId.Value,
                 CustomerName = request.CustomerName,
                 CustomerEmail = request.CustomerEmail,
                 ShippingAddress = request.ShippingAddress,
@@ -66,7 +73,7 @@ public class OrderService : IOrderService
         catch (Exception ex)
         {
             response.Success = false;
-            response.Message = ex.Message;
+            response.Message = ex.GetBaseException().Message;
         }
 
         return response;

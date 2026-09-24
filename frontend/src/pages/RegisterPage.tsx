@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { authApi } from '@/services/api';
 import { Lock, Mail, User, Loader2, ShoppingBag } from 'lucide-react';
 
 export const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectParam = searchParams.get('redirect');
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -23,7 +25,10 @@ export const RegisterPage: React.FC = () => {
       const res = await authApi.register({ name, email, password });
       if (res.success) {
         setSuccessMsg('Account created successfully! Redirecting to login...');
-        setTimeout(() => navigate('/login'), 1500);
+        const targetLoginUrl = redirectParam
+          ? `/login?redirect=${encodeURIComponent(redirectParam)}`
+          : '/login';
+        setTimeout(() => navigate(targetLoginUrl), 1500);
       } else {
         throw new Error(res.message || 'Registration failed.');
       }
@@ -132,7 +137,10 @@ export const RegisterPage: React.FC = () => {
 
           <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 text-center text-xs text-slate-500">
             Already have an account?{' '}
-            <Link to="/login" className="font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
+            <Link
+              to={redirectParam ? `/login?redirect=${encodeURIComponent(redirectParam)}` : '/login'}
+              className="font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
+            >
               Sign In
             </Link>
           </div>

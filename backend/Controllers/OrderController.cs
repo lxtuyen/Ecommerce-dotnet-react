@@ -22,13 +22,17 @@ public class OrderController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult<ServiceResponse<GetOrderDTO>>> CreateOrder([FromBody] CreateOrderDTO request)
     {
-        int? userId = null;
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (!string.IsNullOrEmpty(userIdClaim) && int.TryParse(userIdClaim, out int parsedId))
+        if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
         {
-            userId = parsedId;
+            return Unauthorized(new ServiceResponse<GetOrderDTO>
+            {
+                Success = false,
+                Message = "You must be signed in to complete checkout."
+            });
         }
 
         var response = await _orderService.CreateOrder(request, userId);
