@@ -43,7 +43,7 @@ export const RegisterPage: React.FC = () => {
     <div className="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-6">
         <div className="text-center">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-white mx-auto shadow-lg shadow-indigo-500/30 mb-3">
+          <div className="w-12 h-12 rounded-2xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 flex items-center justify-center text-white mx-auto shadow-lg shadow-zinc-950/20 mb-3">
             <ShoppingBag className="w-6 h-6" />
           </div>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
@@ -80,7 +80,7 @@ export const RegisterPage: React.FC = () => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Alex Mercer"
-                  className="w-full pl-10 pr-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white"
+                  className="w-full pl-10 pr-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
                 />
               </div>
             </div>
@@ -97,7 +97,7 @@ export const RegisterPage: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full pl-10 pr-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white"
+                  className="w-full pl-10 pr-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
                 />
               </div>
             </div>
@@ -114,7 +114,7 @@ export const RegisterPage: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Min 6 characters"
-                  className="w-full pl-10 pr-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white"
+                  className="w-full pl-10 pr-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
                 />
               </div>
             </div>
@@ -122,7 +122,7 @@ export const RegisterPage: React.FC = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 transition-all mt-2"
+              className="w-full py-3 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 disabled:opacity-50 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-zinc-950/20 flex items-center justify-center gap-2 transition-all mt-2"
             >
               {isLoading ? (
                 <>
@@ -139,7 +139,7 @@ export const RegisterPage: React.FC = () => {
             Already have an account?{' '}
             <Link
               to={redirectParam ? `/login?redirect=${encodeURIComponent(redirectParam)}` : '/login'}
-              className="font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
+              className="font-bold text-zinc-900 dark:text-zinc-100 hover:underline"
             >
               Sign In
             </Link>

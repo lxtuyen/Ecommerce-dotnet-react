@@ -42,7 +42,7 @@ export const CartPage: React.FC = () => {
         </p>
         <Link
           to="/shop"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-lg"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-lg"
         >
           <span>Explore Products</span>
           <ArrowRight className="w-4 h-4" />
@@ -89,11 +89,11 @@ export const CartPage: React.FC = () => {
                   <div>
                     <Link
                       to={`/product/${item.productId}`}
-                      className="text-sm sm:text-base font-bold text-slate-900 dark:text-white hover:text-indigo-600 transition-colors"
+                      className="text-sm sm:text-base font-bold text-slate-900 dark:text-white hover:text-zinc-900 dark:text-zinc-100 transition-colors"
                     >
                       {item.name}
                     </Link>
-                    <div className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold mt-1">
+                    <div className="text-xs text-zinc-900 dark:text-zinc-100 font-semibold mt-1">
                       {formatCurrency(item.price)} each
                     </div>
                   </div>
@@ -104,7 +104,7 @@ export const CartPage: React.FC = () => {
                   <div className="flex items-center border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800">
                     <button
                       onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                      className="p-1.5 text-slate-500 hover:text-indigo-600"
+                      className="p-1.5 text-slate-500 hover:text-zinc-900 dark:text-zinc-100"
                     >
                       <Minus className="w-3.5 h-3.5" />
                     </button>
@@ -113,7 +113,7 @@ export const CartPage: React.FC = () => {
                     </span>
                     <button
                       onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                      className="p-1.5 text-slate-500 hover:text-indigo-600"
+                      className="p-1.5 text-slate-500 hover:text-zinc-900 dark:text-zinc-100"
                     >
                       <Plus className="w-3.5 h-3.5" />
                     </button>
@@ -140,7 +140,7 @@ export const CartPage: React.FC = () => {
 
           <Link
             to="/shop"
-            className="inline-flex items-center gap-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline pt-2"
+            className="inline-flex items-center gap-2 text-xs font-bold text-zinc-900 dark:text-zinc-100 hover:underline pt-2"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Continue Shopping</span>
@@ -164,7 +164,7 @@ export const CartPage: React.FC = () => {
                     placeholder="Coupon code (e.g. TECH10)"
                     value={promoCode}
                     onChange={(e) => setPromoCode(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white uppercase"
+                    className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white uppercase"
                   />
                 </div>
                 <button
@@ -209,7 +209,7 @@ export const CartPage: React.FC = () => {
 
               <div className="flex justify-between text-base font-extrabold text-slate-900 dark:text-white pt-3 border-t border-slate-200 dark:border-slate-800">
                 <span>Grand Total</span>
-                <span className="text-indigo-600 dark:text-indigo-400">
+                <span className="text-zinc-900 dark:text-zinc-100">
                   {formatCurrency(finalTotal)}
                 </span>
               </div>
@@ -223,7 +223,7 @@ export const CartPage: React.FC = () => {
                   navigate('/checkout');
                 }
               }}
-              className="w-full py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-xl shadow-indigo-500/25 flex items-center justify-center gap-2 transition-all"
+              className="w-full py-3.5 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white font-bold text-sm shadow-xl shadow-zinc-950/20 flex items-center justify-center gap-2 transition-all"
             >
               <span>Proceed to Checkout</span>
               <ArrowRight className="w-4 h-4" />

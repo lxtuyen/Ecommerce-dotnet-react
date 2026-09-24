@@ -66,7 +66,7 @@ export const AdminDashboardPage: React.FC = () => {
             title="Làm mới số liệu Dashboard"
           >
             <RefreshCw
-              className={`w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 ${
+              className={`w-3.5 h-3.5 text-zinc-900 dark:text-zinc-100 ${
                 isFetchingOrders ? 'animate-spin' : ''
               }`}
             />
@@ -74,7 +74,7 @@ export const AdminDashboardPage: React.FC = () => {
           </button>
           <Link
             to="/admin/products"
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-500/25 transition-all"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white font-bold text-xs shadow-md shadow-zinc-950/20 transition-all"
           >
             <Plus className="w-4 h-4" />
             <span>New Product</span>
@@ -99,7 +99,7 @@ export const AdminDashboardPage: React.FC = () => {
 
         {/* Total Orders */}
         <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center flex-shrink-0">
+          <div className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-800/60 text-zinc-900 dark:text-zinc-100 flex items-center justify-center flex-shrink-0">
             <ShoppingBag className="w-6 h-6" />
           </div>
           <div>
@@ -125,7 +125,7 @@ export const AdminDashboardPage: React.FC = () => {
 
         {/* Categories */}
         <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center flex-shrink-0">
+          <div className="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-800/60 text-zinc-800 dark:text-zinc-200 flex items-center justify-center flex-shrink-0">
             <Layers className="w-6 h-6" />
           </div>
           <div>
@@ -145,7 +145,7 @@ export const AdminDashboardPage: React.FC = () => {
           </h2>
           <Link
             to="/admin/orders"
-            className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
+            className="text-xs font-bold text-zinc-900 dark:text-zinc-100 hover:underline flex items-center gap-1"
           >
             <span>View All Orders</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -171,7 +171,7 @@ export const AdminDashboardPage: React.FC = () => {
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {recentOrders.map((o) => (
                   <tr key={o.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                    <td className="py-3 px-3 font-bold text-indigo-600 dark:text-indigo-400">
+                    <td className="py-3 px-3 font-bold text-zinc-900 dark:text-zinc-100">
                       #{o.id}
                     </td>
                     <td className="py-3 px-3 text-slate-900 dark:text-white font-medium">

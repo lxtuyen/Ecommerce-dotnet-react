@@ -111,7 +111,7 @@ export const ShopPage: React.FC = () => {
             placeholder="Search within products..."
             value={localSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
-            className="w-full pl-10 pr-9 py-2 text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-slate-900 dark:text-slate-100"
+            className="w-full pl-10 pr-9 py-2 text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-zinc-500 focus:ring-2 focus:ring-zinc-500/20 text-slate-900 dark:text-slate-100"
           />
           {localSearch && (
             <button
@@ -145,7 +145,7 @@ export const ShopPage: React.FC = () => {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="px-3 py-2 text-xs font-semibold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-800 dark:text-slate-200"
+              className="px-3 py-2 text-xs font-semibold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-800 dark:text-slate-200"
             >
               <option value="default">Sort by: Featured</option>
               <option value="price-asc">Price: Low to High</option>
@@ -171,7 +171,7 @@ export const ShopPage: React.FC = () => {
                 onClick={() => handleCategoryChange('')}
                 className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold transition-colors flex items-center justify-between ${
                   !activeCategory
-                    ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400'
+                    ? 'bg-zinc-100 dark:bg-zinc-800/60 text-zinc-900 dark:text-zinc-100'
                     : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
                 }`}
               >
@@ -183,7 +183,7 @@ export const ShopPage: React.FC = () => {
                   onClick={() => handleCategoryChange(cat.name)}
                   className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold transition-colors flex items-center justify-between ${
                     activeCategory.toLowerCase() === cat.name.toLowerCase()
-                      ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400'
+                      ? 'bg-zinc-100 dark:bg-zinc-800/60 text-zinc-900 dark:text-zinc-100'
                       : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
                   }`}
                 >
@@ -199,7 +199,7 @@ export const ShopPage: React.FC = () => {
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
                 Max Price
               </h3>
-              <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
+              <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100">
                 ${maxPrice}
               </span>
             </div>
@@ -210,7 +210,7 @@ export const ShopPage: React.FC = () => {
               step="50"
               value={maxPrice}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
-              className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+              className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-zinc-900 dark:accent-white"
             />
             <div className="flex justify-between text-[10px] text-slate-400 mt-2 font-medium">
               <span>$50</span>
@@ -260,7 +260,7 @@ export const ShopPage: React.FC = () => {
               </p>
               <button
                 onClick={clearAllFilters}
-                className="px-5 py-2.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider transition-all"
+                className="px-5 py-2.5 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white font-bold text-xs uppercase tracking-wider transition-all"
               >
                 Clear Filters
               </button>

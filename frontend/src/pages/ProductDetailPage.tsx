@@ -68,7 +68,7 @@ export const ProductDetailPage: React.FC = () => {
         </p>
         <button
           onClick={() => navigate('/shop')}
-          className="px-6 py-2.5 rounded-full bg-indigo-600 text-white font-bold text-xs uppercase"
+          className="px-6 py-2.5 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold text-xs uppercase"
         >
           Return to Shop
         </button>
@@ -132,7 +132,7 @@ export const ProductDetailPage: React.FC = () => {
             </h1>
 
             <div className="mt-4 flex items-baseline gap-3">
-              <span className="text-3xl font-extrabold text-indigo-600 dark:text-indigo-400">
+              <span className="text-3xl font-extrabold text-zinc-900 dark:text-zinc-100">
                 {formatCurrency(product.price)}
               </span>
               <span className="text-xs font-semibold px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">
@@ -154,7 +154,7 @@ export const ProductDetailPage: React.FC = () => {
               <div className="flex items-center border border-slate-300 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-900">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="p-2 text-slate-600 dark:text-slate-300 hover:text-indigo-600"
+                  className="p-2 text-slate-600 dark:text-slate-300 hover:text-zinc-900 dark:text-zinc-100"
                 >
                   <Minus className="w-4 h-4" />
                 </button>
@@ -163,7 +163,7 @@ export const ProductDetailPage: React.FC = () => {
                 </span>
                 <button
                   onClick={() => setQuantity(quantity + 1)}
-                  className="p-2 text-slate-600 dark:text-slate-300 hover:text-indigo-600"
+                  className="p-2 text-slate-600 dark:text-slate-300 hover:text-zinc-900 dark:text-zinc-100"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
@@ -174,7 +174,7 @@ export const ProductDetailPage: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
               <button
                 onClick={handleAddToCart}
-                className="py-3.5 px-6 rounded-xl font-bold text-sm bg-indigo-600 hover:bg-indigo-700 text-white shadow-xl shadow-indigo-500/25 flex items-center justify-center gap-2 transition-all"
+                className="py-3.5 px-6 rounded-xl font-bold text-sm bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white shadow-xl shadow-zinc-950/20 flex items-center justify-center gap-2 transition-all"
               >
                 {isInCart ? <Check className="w-4 h-4" /> : <ShoppingBag className="w-4 h-4" />}
                 <span>{isInCart ? 'Added To Cart' : 'Add to Cart'}</span>
@@ -192,7 +192,7 @@ export const ProductDetailPage: React.FC = () => {
           {/* Reassurance Badges */}
           <div className="grid grid-cols-3 gap-3 pt-6 border-t border-slate-200 dark:border-slate-800 text-center">
             <div className="p-3 rounded-2xl bg-slate-100/70 dark:bg-slate-800/50">
-              <Truck className="w-5 h-5 mx-auto text-indigo-600 dark:text-indigo-400 mb-1" />
+              <Truck className="w-5 h-5 mx-auto text-zinc-900 dark:text-zinc-100 mb-1" />
               <div className="text-[11px] font-bold text-slate-800 dark:text-slate-200">
                 Free Express Delivery
               </div>

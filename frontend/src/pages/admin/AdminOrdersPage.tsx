@@ -57,7 +57,7 @@ export const AdminOrdersPage: React.FC = () => {
             title="Làm mới danh sách đơn hàng"
           >
             <RefreshCw
-              className={`w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 ${
+              className={`w-3.5 h-3.5 text-zinc-900 dark:text-zinc-100 ${
                 isFetching ? 'animate-spin' : ''
               }`}
             />
@@ -72,7 +72,7 @@ export const AdminOrdersPage: React.FC = () => {
                 onClick={() => setStatusFilter(st)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                   statusFilter === st
-                    ? 'bg-indigo-600 text-white shadow-sm'
+                    ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-sm'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
@@ -89,7 +89,7 @@ export const AdminOrdersPage: React.FC = () => {
           <div>
             <strong>Lỗi tải danh sách đơn hàng:</strong> {(error as any)?.message || 'Không thể truy cập dữ liệu.'}
             <p className="mt-1 text-slate-600 dark:text-slate-400">
-              Vui lòng đảm bảo bạn đang đăng nhập bằng tài khoản Administrator (<code className="text-indigo-600 font-bold">admin@webstore.com</code>).
+              Vui lòng đảm bảo bạn đang đăng nhập bằng tài khoản Administrator (<code className="text-zinc-900 dark:text-zinc-100 font-bold">admin@webstore.com</code>).
             </p>
           </div>
         </div>
@@ -120,7 +120,7 @@ export const AdminOrdersPage: React.FC = () => {
                 {filteredOrders.map((order) => (
                   <tr key={order.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
                     <td className="py-3.5 px-4">
-                      <span className="font-extrabold text-indigo-600 dark:text-indigo-400">
+                      <span className="font-extrabold text-zinc-900 dark:text-zinc-100">
                         #{order.id}
                       </span>
                       <div className="text-[10px] text-slate-400">
@@ -151,7 +151,7 @@ export const AdminOrdersPage: React.FC = () => {
                             status: e.target.value,
                           })
                         }
-                        className="px-2.5 py-1 text-xs font-bold bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-800 dark:text-slate-200 cursor-pointer"
+                        className="px-2.5 py-1 text-xs font-bold bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-800 dark:text-slate-200 cursor-pointer"
                       >
                         {statuses.map((st) => (
                           <option key={st} value={st}>

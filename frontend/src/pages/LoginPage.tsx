@@ -51,7 +51,7 @@ export const LoginPage: React.FC = () => {
       <div className="max-w-md w-full space-y-6">
         {/* Header */}
         <div className="text-center">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-white mx-auto shadow-lg shadow-indigo-500/30 mb-3">
+          <div className="w-12 h-12 rounded-2xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 flex items-center justify-center text-white mx-auto shadow-lg shadow-zinc-950/20 mb-3">
             <ShoppingBag className="w-6 h-6" />
           </div>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
@@ -63,15 +63,15 @@ export const LoginPage: React.FC = () => {
         </div>
 
         {/* Demo Credentials Box */}
-        <div className="p-4 rounded-2xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200/60 dark:border-indigo-900/50 space-y-2">
-          <p className="text-xs font-bold text-indigo-900 dark:text-indigo-200">
+        <div className="p-4 rounded-2xl bg-zinc-100/80 dark:bg-zinc-800/40 border border-zinc-300 dark:border-zinc-800 space-y-2">
+          <p className="text-xs font-bold text-zinc-900 dark:text-zinc-100">
             Demo Credentials (1-Click Fill):
           </p>
           <div className="flex gap-2">
             <button
               type="button"
               onClick={() => handleQuickFill('admin@webstore.com', 'Admin@123')}
-              className="flex-1 py-1.5 px-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all"
+              className="flex-1 py-1.5 px-2.5 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white text-[11px] font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all"
             >
               <Shield className="w-3.5 h-3.5" />
               <span>Admin Account</span>
@@ -90,8 +90,8 @@ export const LoginPage: React.FC = () => {
         {/* Form Card */}
         <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 shadow-sm">
           {redirectParam === '/checkout' && (
-            <div className="mb-4 p-3.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-start gap-2.5 text-indigo-700 dark:text-indigo-300 text-xs">
-              <Info className="w-4 h-4 shrink-0 mt-0.5 text-indigo-600 dark:text-indigo-400" />
+            <div className="mb-4 p-3.5 rounded-2xl bg-zinc-100 dark:bg-zinc-800/60 border border-zinc-300 dark:border-zinc-700 flex items-start gap-2.5 text-zinc-800 dark:text-zinc-200 text-xs">
+              <Info className="w-4 h-4 shrink-0 mt-0.5 text-zinc-900 dark:text-zinc-100" />
               <span>
                 <strong>Đăng nhập để thanh toán:</strong> Vui lòng đăng nhập tài khoản của bạn để tiếp tục đặt hàng (hoặc dùng 1-Click tài khoản Khách hàng / Admin phía trên).
               </span>
@@ -117,7 +117,7 @@ export const LoginPage: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full pl-10 pr-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white"
+                  className="w-full pl-10 pr-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
                 />
               </div>
             </div>
@@ -134,7 +134,7 @@ export const LoginPage: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white"
+                  className="w-full pl-10 pr-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
                 />
               </div>
             </div>
@@ -142,7 +142,7 @@ export const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 transition-all mt-2"
+              className="w-full py-3 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 disabled:opacity-50 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-zinc-950/20 flex items-center justify-center gap-2 transition-all mt-2"
             >
               {isLoading ? (
                 <>
@@ -159,7 +159,7 @@ export const LoginPage: React.FC = () => {
             Don&apos;t have an account yet?{' '}
             <Link
               to={redirectParam ? `/register?redirect=${encodeURIComponent(redirectParam)}` : '/register'}
-              className="font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
+              className="font-bold text-zinc-900 dark:text-zinc-100 hover:underline"
             >
               Create one now
             </Link>

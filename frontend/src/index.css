@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply antialiased selection:bg-indigo-500 selection:text-white;
+    @apply antialiased selection:bg-zinc-800 selection:text-white dark:selection:bg-zinc-200 dark:selection:text-zinc-900 selection:text-white;
   }
 
   /* Custom sleek scrollbar */

@@ -28,7 +28,7 @@ export const HomePage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-10 gap-4">
             <div>
-              <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-1">
+              <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100 mb-1">
                 <TrendingUp className="w-4 h-4" />
                 <span>Hand-picked recommendations</span>
               </div>
@@ -38,7 +38,7 @@ export const HomePage: React.FC = () => {
             </div>
             <Link
               to="/shop"
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-zinc-900 dark:text-zinc-100 hover:text-zinc-900 dark:hover:text-white transition-colors"
             >
               <span>Explore All Hardware</span>
               <ArrowRight className="w-4 h-4" />
@@ -74,9 +74,9 @@ export const HomePage: React.FC = () => {
       {/* Modern Promotional Callout Banner */}
       <section className="py-16 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-indigo-900 via-indigo-950 to-slate-950 text-white p-8 sm:p-12 lg:p-16 shadow-2xl">
+          <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-zinc-900 via-zinc-950 to-black text-white p-8 sm:p-12 lg:p-16 shadow-2xl">
             <div className="max-w-xl space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-semibold border border-indigo-400/30">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-800 text-zinc-200 text-xs font-semibold border border-zinc-700">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Limited Seasonal Deal</span>
               </div>

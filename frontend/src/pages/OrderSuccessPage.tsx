@@ -15,14 +15,14 @@ export const OrderSuccessPage: React.FC = () => {
         <CheckCircle2 className="w-10 h-10" />
       </div>
 
-      <span className="text-xs font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
+      <span className="text-xs font-bold uppercase tracking-widest text-zinc-900 dark:text-zinc-100">
         Order Confirmed
       </span>
       <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-1 mb-3">
         Thank You for Your Order!
       </h1>
       <p className="text-sm text-slate-600 dark:text-slate-300 max-w-md mx-auto leading-relaxed">
-        Your order <strong className="text-indigo-600 dark:text-indigo-400">#{id}</strong> has been received and is now being processed by our fulfillment center.
+        Your order <strong className="text-zinc-900 dark:text-zinc-100">#{id}</strong> has been received and is now being processed by our fulfillment center.
       </p>
 
       {/* Order Card Preview */}
@@ -62,7 +62,7 @@ export const OrderSuccessPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 mt-8">
         <Link
           to="/orders"
-          className="w-full sm:w-auto px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25 transition-all"
+          className="w-full sm:w-auto px-6 py-3 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-zinc-950/20 transition-all"
         >
           <Package className="w-4 h-4" />
           <span>Track My Orders</span>

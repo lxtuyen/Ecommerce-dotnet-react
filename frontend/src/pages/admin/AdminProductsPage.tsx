@@ -119,7 +119,7 @@ export const AdminProductsPage: React.FC = () => {
         </div>
         <button
           onClick={openCreateModal}
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-500/25 transition-all"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white font-bold text-xs shadow-md shadow-zinc-950/20 transition-all"
         >
           <Plus className="w-4 h-4" />
           <span>Add New Product</span>
@@ -134,7 +134,7 @@ export const AdminProductsPage: React.FC = () => {
           placeholder="Filter by product name..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white"
+          className="w-full pl-10 pr-4 py-2 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
         />
       </div>
 
@@ -197,7 +197,7 @@ export const AdminProductsPage: React.FC = () => {
                       <div className="inline-flex items-center gap-2">
                         <button
                           onClick={() => openEditModal(p)}
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-zinc-900 dark:text-zinc-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                           title="Edit Product"
                         >
                           <Edit2 className="w-4 h-4" />
@@ -247,7 +247,7 @@ export const AdminProductsPage: React.FC = () => {
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
                   placeholder="e.g. MacBook Pro 16 M3 Max"
-                  className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white"
+                  className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
                 />
               </div>
 
@@ -263,7 +263,7 @@ export const AdminProductsPage: React.FC = () => {
                     value={formPrice}
                     onChange={(e) => setFormPrice(e.target.value)}
                     placeholder="1299.99"
-                    className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white"
+                    className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
                   />
                 </div>
 
@@ -274,7 +274,7 @@ export const AdminProductsPage: React.FC = () => {
                   <select
                     value={formCatId}
                     onChange={(e) => setFormCatId(Number(e.target.value))}
-                    className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white"
+                    className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
                   >
                     {categories?.map((c) => (
                       <option key={c.id} value={c.id}>
@@ -296,7 +296,7 @@ export const AdminProductsPage: React.FC = () => {
                     value={formImage}
                     onChange={(e) => setFormImage(e.target.value)}
                     placeholder="https://images.unsplash.com/..."
-                    className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white"
+                    className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
                   />
                   {formImage && (
                     <img
@@ -318,7 +318,7 @@ export const AdminProductsPage: React.FC = () => {
                   value={formDesc}
                   onChange={(e) => setFormDesc(e.target.value)}
                   placeholder="Key specifications, features and highlights..."
-                  className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white"
+                  className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
                 />
               </div>
 
@@ -333,7 +333,7 @@ export const AdminProductsPage: React.FC = () => {
                 <button
                   type="submit"
                   disabled={createMutation.isPending || updateMutation.isPending}
-                  className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-indigo-500/25"
+                  className="px-5 py-2 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 disabled:opacity-50 text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-zinc-950/20"
                 >
                   {(createMutation.isPending || updateMutation.isPending) && (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />

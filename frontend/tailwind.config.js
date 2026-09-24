@@ -8,18 +8,32 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Minimalist Stealth & Titanium Palette (Apple / Nothing Store inspired)
         primary: {
-          50: '#eef2ff',
-          100: '#e0e7ff',
-          200: '#c7d2fe',
-          300: '#a5b4fc',
-          400: '#818cf8',
-          500: '#6366f1',
-          600: '#4f46e5',
-          700: '#4338ca',
-          800: '#3730a3',
-          900: '#312e81',
-          950: '#1e1b4b',
+          50: '#fafafa',
+          100: '#f4f4f5',
+          200: '#e4e4e7',
+          300: '#d4d4d8',
+          400: '#a1a1aa',
+          500: '#71717a',
+          600: '#18181b', // Obsidian Dark
+          700: '#09090b', // Pure Charcoal
+          800: '#040405',
+          900: '#000000',
+          950: '#000000',
+        },
+        indigo: {
+          50: '#fafafa',
+          100: '#f4f4f5',
+          200: '#e4e4e7',
+          300: '#d4d4d8',
+          400: '#a1a1aa',
+          500: '#71717a',
+          600: '#18181b', // Obsidian deep black/charcoal
+          700: '#09090b', // Ultra dark
+          800: '#040405',
+          900: '#000000',
+          950: '#000000',
         },
       },
       fontFamily: {

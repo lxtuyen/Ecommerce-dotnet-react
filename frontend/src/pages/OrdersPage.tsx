@@ -64,7 +64,7 @@ export const OrdersPage: React.FC = () => {
         </p>
         <button
           onClick={() => navigate('/login')}
-          className="px-6 py-2.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase"
+          className="px-6 py-2.5 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white font-bold text-xs uppercase"
         >
           Sign In Now
         </button>
@@ -90,7 +90,7 @@ export const OrdersPage: React.FC = () => {
           title="Làm mới lịch sử đơn hàng"
         >
           <RefreshCw
-            className={`w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 ${
+            className={`w-3.5 h-3.5 text-zinc-900 dark:text-zinc-100 ${
               isFetching ? 'animate-spin' : ''
             }`}
           />
@@ -118,7 +118,7 @@ export const OrdersPage: React.FC = () => {
           </p>
           <Link
             to="/shop"
-            className="px-5 py-2.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold uppercase"
+            className="px-5 py-2.5 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white text-xs font-bold uppercase"
           >
             Start Shopping
           </Link>
@@ -133,7 +133,7 @@ export const OrdersPage: React.FC = () => {
               {/* Order Card Header */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 gap-3">
                 <div>
-                  <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                  <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100">
                     Order #{order.id}
                   </span>
                   <div className="text-xs text-slate-400 mt-0.5">

@@ -28,12 +28,12 @@ export const AdminLayout: React.FC = () => {
             Admin Access Restricted
           </h2>
           <p className="text-xs text-slate-500 leading-relaxed">
-            You must be signed in with an Administrator account (<code className="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-indigo-600">admin@webstore.com</code>) to access the control panel.
+            You must be signed in with an Administrator account (<code className="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-zinc-900 dark:text-zinc-100">admin@webstore.com</code>) to access the control panel.
           </p>
           <div className="flex gap-2 pt-2">
             <button
               onClick={() => navigate('/login')}
-              className="flex-1 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-xs"
+              className="flex-1 py-2.5 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold text-xs"
             >
               Sign In as Admin
             </button>
@@ -75,7 +75,7 @@ export const AdminLayout: React.FC = () => {
                     to={item.href}
                     className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
                       isActive
-                        ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20'
+                        ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-md shadow-zinc-950/20'
                         : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/80'
                     }`}
                   >
@@ -87,9 +87,9 @@ export const AdminLayout: React.FC = () => {
 
               <Link
                 to="/"
-                className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all border-t border-slate-100 dark:border-slate-800/80 pt-2"
+                className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-zinc-900 dark:text-zinc-100 dark:hover:text-zinc-400 transition-all border-t border-slate-100 dark:border-slate-800/80 pt-2"
               >
-                <Store className="w-4 h-4 text-indigo-500" />
+                <Store className="w-4 h-4 text-zinc-600 dark:text-zinc-400" />
                 <span>Back to Store</span>
               </Link>
 

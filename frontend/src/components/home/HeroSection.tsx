@@ -4,22 +4,22 @@ import { ArrowRight, Sparkles, ShieldCheck, Zap, Award } from 'lucide-react';
 
 export const HeroSection: React.FC = () => {
   return (
-    <div className="relative overflow-hidden bg-gradient-to-b from-indigo-50/60 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 pt-8 sm:pt-14 pb-16 sm:pb-24 border-b border-slate-200/80 dark:border-slate-800">
+    <div className="relative overflow-hidden bg-gradient-to-b from-zinc-100/60 via-white to-slate-50 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 pt-8 sm:pt-14 pb-16 sm:pb-24 border-b border-slate-200/80 dark:border-slate-800">
       {/* Glow decorative gradients */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-indigo-500/10 dark:bg-indigo-600/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-zinc-400/10 dark:bg-zinc-700/15 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           {/* Left Text Content */}
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-100/80 dark:bg-indigo-950/80 border border-indigo-200 dark:border-indigo-800/80 text-xs font-semibold text-indigo-700 dark:text-indigo-300 shadow-sm">
-              <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-xs font-semibold text-zinc-800 dark:text-zinc-200 shadow-sm">
+              <Sparkles className="w-3.5 h-3.5 text-zinc-700 dark:text-zinc-300" />
               <span>Next-Generation Flagship Tech 2026</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15]">
               Experience Tomorrow&apos;s Technology{' '}
-              <span className="bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-zinc-900 via-zinc-600 to-zinc-400 dark:from-white dark:via-zinc-200 dark:to-zinc-400 bg-clip-text text-transparent">
                 Today.
               </span>
             </h1>
@@ -32,7 +32,7 @@ export const HeroSection: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">
               <Link
                 to="/shop"
-                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-xl shadow-indigo-500/25 flex items-center justify-center gap-2 group transition-all"
+                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-bold text-sm shadow-xl shadow-zinc-950/20 flex items-center justify-center gap-2 group transition-all"
               >
                 <span>Shop Catalog</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -56,7 +56,7 @@ export const HeroSection: React.FC = () => {
                 <span>Instant Cloud Database</span>
               </div>
               <div className="flex items-center gap-2">
-                <Award className="w-4 h-4 text-indigo-500" />
+                <Award className="w-4 h-4 text-zinc-600 dark:text-zinc-400" />
                 <span>Top Rated Tech Store</span>
               </div>
             </div>
@@ -65,14 +65,14 @@ export const HeroSection: React.FC = () => {
           {/* Right Showcase Card */}
           <div className="lg:col-span-5 relative">
             <div className="relative mx-auto max-w-md lg:max-w-none">
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-indigo-500/10 border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 group">
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-zinc-950/10 border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 group">
                 <img
                   src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=900&auto=format&fit=crop&q=80"
                   alt="Featured Flagship"
                   className="w-full h-80 sm:h-96 object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent flex flex-col justify-end p-6 sm:p-8">
-                  <span className="text-xs font-bold uppercase tracking-widest text-indigo-400 mb-1">
+                  <span className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-1">
                     Featured Release
                   </span>
                   <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">
