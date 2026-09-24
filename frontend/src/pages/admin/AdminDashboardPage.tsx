@@ -10,12 +10,38 @@ import {
   Layers,
   ArrowRight,
   Plus,
+  RefreshCw,
 } from 'lucide-react';
 
 export const AdminDashboardPage: React.FC = () => {
-  const { data: products } = useQuery({ queryKey: ['products'], queryFn: productsApi.getAll });
-  const { data: categories } = useQuery({ queryKey: ['categories'], queryFn: categoriesApi.getAll });
-  const { data: orders } = useQuery({ queryKey: ['all-orders'], queryFn: ordersApi.getAll });
+  const { data: products, refetch: refetchProducts } = useQuery({
+    queryKey: ['products'],
+    queryFn: productsApi.getAll,
+    staleTime: 0,
+    refetchOnMount: 'always',
+  });
+  const { data: categories, refetch: refetchCategories } = useQuery({
+    queryKey: ['categories'],
+    queryFn: categoriesApi.getAll,
+    staleTime: 0,
+    refetchOnMount: 'always',
+  });
+  const {
+    data: orders,
+    refetch: refetchOrders,
+    isFetching: isFetchingOrders,
+  } = useQuery({
+    queryKey: ['all-orders'],
+    queryFn: ordersApi.getAll,
+    staleTime: 0,
+    refetchOnMount: 'always',
+  });
+
+  const handleRefreshAll = () => {
+    refetchOrders();
+    refetchProducts();
+    refetchCategories();
+  };
 
   const totalRevenue = (orders || []).reduce((sum, o) => sum + (o.totalAmount || 0), 0);
   const recentOrders = (orders || []).slice(0, 5);
@@ -32,13 +58,28 @@ export const AdminDashboardPage: React.FC = () => {
             Real-time business performance and catalog health
           </p>
         </div>
-        <Link
-          to="/admin/products"
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-500/25 transition-all"
-        >
-          <Plus className="w-4 h-4" />
-          <span>New Product</span>
-        </Link>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleRefreshAll}
+            disabled={isFetchingOrders}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs shadow-sm transition-all disabled:opacity-50"
+            title="Làm mới số liệu Dashboard"
+          >
+            <RefreshCw
+              className={`w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 ${
+                isFetchingOrders ? 'animate-spin' : ''
+              }`}
+            />
+            <span>{isFetchingOrders ? 'Đang cập nhật...' : 'Làm mới'}</span>
+          </button>
+          <Link
+            to="/admin/products"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-500/25 transition-all"
+          >
+            <Plus className="w-4 h-4" />
+            <span>New Product</span>
+          </Link>
+        </div>
       </div>
 
       {/* Metric Cards Grid */}

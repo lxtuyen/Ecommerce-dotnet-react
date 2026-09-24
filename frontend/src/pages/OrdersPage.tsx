@@ -4,16 +4,23 @@ import { useQuery } from '@tanstack/react-query';
 import { ordersApi } from '@/services/api';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { formatCurrency, formatDate } from '@/utils/formatters';
-import { Package, Clock, CheckCircle2, Truck, AlertCircle, ShoppingBag } from 'lucide-react';
+import { Package, Clock, CheckCircle2, Truck, AlertCircle, ShoppingBag, RefreshCw } from 'lucide-react';
 
 export const OrdersPage: React.FC = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuthStore();
 
-  const { data: orders, isLoading } = useQuery({
+  const {
+    data: orders,
+    isLoading,
+    isFetching,
+    refetch,
+  } = useQuery({
     queryKey: ['my-orders'],
     queryFn: ordersApi.getMyOrders,
     enabled: isAuthenticated,
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 
   const getStatusBadge = (status: string) => {
@@ -67,13 +74,28 @@ export const OrdersPage: React.FC = () => {
 
   return (
     <div className="py-8 sm:py-12 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="mb-8 pb-4 border-b border-slate-200 dark:border-slate-800">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-          My Order History
-        </h1>
-        <p className="text-xs text-slate-500 mt-1">
-          Review all your current orders, tracked delivery and purchased hardware
-        </p>
+      <div className="mb-8 pb-4 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+            My Order History
+          </h1>
+          <p className="text-xs text-slate-500 mt-1">
+            Review all your current orders, tracked delivery and purchased hardware ({orders?.length || 0} total)
+          </p>
+        </div>
+        <button
+          onClick={() => refetch()}
+          disabled={isFetching}
+          className="self-start sm:self-auto flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs shadow-sm transition-all disabled:opacity-50"
+          title="Làm mới lịch sử đơn hàng"
+        >
+          <RefreshCw
+            className={`w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 ${
+              isFetching ? 'animate-spin' : ''
+            }`}
+          />
+          <span>{isFetching ? 'Đang cập nhật...' : 'Làm mới'}</span>
+        </button>
       </div>
 
       {isLoading ? (

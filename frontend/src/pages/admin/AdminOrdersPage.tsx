@@ -2,15 +2,23 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ordersApi } from '@/services/api';
 import { formatCurrency, formatDate } from '@/utils/formatters';
-import { ShoppingBag, ChevronDown, Check } from 'lucide-react';
+import { ShoppingBag, ChevronDown, Check, RefreshCw, AlertCircle } from 'lucide-react';
 
 export const AdminOrdersPage: React.FC = () => {
   const queryClient = useQueryClient();
   const [statusFilter, setStatusFilter] = useState('All');
 
-  const { data: orders, isLoading } = useQuery({
+  const {
+    data: orders,
+    isLoading,
+    isFetching,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ['all-orders'],
     queryFn: ordersApi.getAll,
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 
   const updateStatusMutation = useMutation({
@@ -36,27 +44,56 @@ export const AdminOrdersPage: React.FC = () => {
             Customer Orders
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Track and update fulfillment lifecycle across all customers
+            Track and update fulfillment lifecycle across all customers ({orders?.length || 0} total)
           </p>
         </div>
 
-        {/* Status Filter tabs */}
-        <div className="flex flex-wrap gap-1.5 p-1 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
-          {['All', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].map((st) => (
-            <button
-              key={st}
-              onClick={() => setStatusFilter(st)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                statusFilter === st
-                  ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Refresh button */}
+          <button
+            onClick={() => refetch()}
+            disabled={isFetching}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm disabled:opacity-50"
+            title="Làm mới danh sách đơn hàng"
+          >
+            <RefreshCw
+              className={`w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 ${
+                isFetching ? 'animate-spin' : ''
               }`}
-            >
-              {st}
-            </button>
-          ))}
+            />
+            <span>{isFetching ? 'Đang làm mới...' : 'Làm mới'}</span>
+          </button>
+
+          {/* Status Filter tabs */}
+          <div className="flex flex-wrap gap-1.5 p-1 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
+            {['All', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].map((st) => (
+              <button
+                key={st}
+                onClick={() => setStatusFilter(st)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                  statusFilter === st
+                    ? 'bg-indigo-600 text-white shadow-sm'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                {st}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
+
+      {error && (
+        <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900 flex items-start gap-3 text-rose-700 dark:text-rose-300 text-xs">
+          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-600" />
+          <div>
+            <strong>Lỗi tải danh sách đơn hàng:</strong> {(error as any)?.message || 'Không thể truy cập dữ liệu.'}
+            <p className="mt-1 text-slate-600 dark:text-slate-400">
+              Vui lòng đảm bảo bạn đang đăng nhập bằng tài khoản Administrator (<code className="text-indigo-600 font-bold">admin@webstore.com</code>).
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Orders Table */}
       <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">

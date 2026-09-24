@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { useCartStore } from '@/stores/useCartStore';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { ordersApi } from '@/services/api';
@@ -16,6 +17,7 @@ import {
 
 export const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { items, getTotalPrice, clearCart } = useCartStore();
   const { user, isAuthenticated } = useAuthStore();
 
@@ -108,6 +110,8 @@ export const CheckoutPage: React.FC = () => {
 
       const res = await ordersApi.create(payload);
       if (res.success && res.data) {
+        queryClient.invalidateQueries({ queryKey: ['all-orders'] });
+        queryClient.invalidateQueries({ queryKey: ['my-orders'] });
         clearCart();
         navigate(`/order-success/${res.data.id}`, { state: { order: res.data } });
       } else {

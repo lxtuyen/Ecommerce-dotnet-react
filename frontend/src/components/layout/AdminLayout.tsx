@@ -57,25 +57,6 @@ export const AdminLayout: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-100/70 dark:bg-slate-950">
-      {/* Top Admin Sub-bar */}
-      <div className="bg-slate-900 text-white px-4 sm:px-8 py-3 flex items-center justify-between border-b border-slate-800">
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-indigo-600 text-white">
-            Admin Portal
-          </span>
-          <span className="text-xs text-slate-400 hidden sm:inline">
-            Logged in as {user?.name} ({user?.email})
-          </span>
-        </div>
-        <Link
-          to="/"
-          className="flex items-center gap-1.5 text-xs font-bold text-slate-300 hover:text-white transition-colors"
-        >
-          <Store className="w-3.5 h-3.5" />
-          <span>Return to Storefront</span>
-        </Link>
-      </div>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
           {/* Admin Sidebar Navigation */}
@@ -103,6 +84,14 @@ export const AdminLayout: React.FC = () => {
                   </Link>
                 );
               })}
+
+              <Link
+                to="/"
+                className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all border-t border-slate-100 dark:border-slate-800/80 pt-2"
+              >
+                <Store className="w-4 h-4 text-indigo-500" />
+                <span>Back to Store</span>
+              </Link>
 
               <button
                 onClick={() => {
