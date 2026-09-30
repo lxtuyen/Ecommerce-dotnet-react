@@ -5,6 +5,7 @@ import { productsApi } from '@/services/api';
 import { useCartStore } from '@/stores/useCartStore';
 import { formatCurrency } from '@/utils/formatters';
 import { ProductCard } from '@/components/products/ProductCard';
+import { ProductReviewsSection } from '@/components/products/ProductReviewsSection';
 import {
   Star,
   ShoppingBag,
@@ -122,9 +123,11 @@ export const ProductDetailPage: React.FC = () => {
                 <Star className="w-4 h-4 fill-amber-400" />
               </div>
               <span className="text-sm font-bold text-slate-800 dark:text-slate-200">
-                {product.rating || 4.9}
+                {product.rating ? product.rating.toFixed(1) : '4.9'}
               </span>
-              <span className="text-xs text-slate-400">• Verified Customer Rating</span>
+              <span className="text-xs text-slate-400">
+                • {product.reviewCount ? `${product.reviewCount} customer reviews` : 'Verified Customer Rating'}
+              </span>
             </div>
 
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
@@ -217,6 +220,9 @@ export const ProductDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Customer Reviews & Ratings Section */}
+      <ProductReviewsSection productId={product.id} productName={product.name} />
 
       {/* Related Products Section */}
       {relatedProducts.length > 0 && (

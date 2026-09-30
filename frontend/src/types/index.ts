@@ -24,6 +24,7 @@ export interface Product {
   description: string;
   image: string;
   rating: number;
+  reviewCount?: number;
   stockQuantity: number;
   categoryId: number;
   categoryName?: string;
@@ -140,4 +141,33 @@ export interface ServiceResponse<T> {
   data: T;
   success: boolean;
   message: string;
+}
+
+export interface Review {
+  id: number;
+  productId: number;
+  userId: number;
+  userName: string;
+  userAvatar?: string;
+  rating: number;
+  title: string;
+  comment: string;
+  isVerifiedPurchase: boolean;
+  createdAt: string;
+}
+
+export interface ProductReviewSummary {
+  averageRating: number;
+  totalReviews: number;
+  ratingDistribution: Record<number, number>;
+  reviews: Review[];
+  canReview: boolean;
+  hasReviewed: boolean;
+  isVerifiedBuyer: boolean;
+}
+
+export interface CreateReviewRequest {
+  rating: number;
+  title: string;
+  comment: string;
 }

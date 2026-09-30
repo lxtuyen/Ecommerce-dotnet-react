@@ -52,8 +52,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               <Star className="w-3.5 h-3.5 fill-amber-400" />
             </div>
             <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-              {product.rating || 4.8}
+              {product.rating ? product.rating.toFixed(1) : '4.8'}
             </span>
+            {product.reviewCount !== undefined && product.reviewCount > 0 && (
+              <span className="text-[11px] text-slate-400 font-medium">
+                ({product.reviewCount})
+              </span>
+            )}
           </div>
 
           {/* Title */}

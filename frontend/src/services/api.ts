@@ -4,10 +4,13 @@ import {
   Coupon,
   CouponValidationResult,
   CreateOrderPayload,
+  CreateReviewRequest,
   Order,
   PaymentIntentPayload,
   PaymentIntentResponse,
   Product,
+  ProductReviewSummary,
+  Review,
   ServiceResponse,
   StripeConfigResponse,
   User,
@@ -186,6 +189,30 @@ export const couponsApi = {
   getAll: async () => {
     const res = await apiClient.get<ServiceResponse<Coupon[]>>('/Coupons');
     return res.data.data || [];
+  },
+};
+
+// Reviews API
+export const reviewsApi = {
+  getByProductId: async (productId: number): Promise<ProductReviewSummary> => {
+    const res = await apiClient.get<ServiceResponse<ProductReviewSummary>>(
+      `/Reviews/product/${productId}`
+    );
+    return res.data.data;
+  },
+  addOrUpdate: async (
+    productId: number,
+    data: CreateReviewRequest
+  ): Promise<ServiceResponse<Review>> => {
+    const res = await apiClient.post<ServiceResponse<Review>>(
+      `/Reviews/product/${productId}`,
+      data
+    );
+    return res.data;
+  },
+  delete: async (reviewId: number): Promise<ServiceResponse<boolean>> => {
+    const res = await apiClient.delete<ServiceResponse<boolean>>(`/Reviews/${reviewId}`);
+    return res.data;
   },
 };
 
