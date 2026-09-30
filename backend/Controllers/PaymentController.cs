@@ -48,4 +48,25 @@ public class PaymentController : ControllerBase
 
         return Ok(response);
     }
+
+    [HttpPost("webhook")]
+    [AllowAnonymous]
+    public async Task<IActionResult> StripeWebhook()
+    {
+        string json;
+        using (var reader = new System.IO.StreamReader(HttpContext.Request.Body))
+        {
+            json = await reader.ReadToEndAsync();
+        }
+
+        var stripeSignature = Request.Headers["Stripe-Signature"].ToString();
+        var response = await _paymentService.HandleWebhookEvent(json, stripeSignature);
+
+        if (!response.Success)
+        {
+            return BadRequest(response.Message);
+        }
+
+        return Ok(new { received = true });
+    }
 }

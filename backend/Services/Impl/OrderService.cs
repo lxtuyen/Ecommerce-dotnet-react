@@ -12,10 +12,12 @@ namespace backend.Services.Impl;
 public class OrderService : IOrderService
 {
     private readonly DataContext _context;
+    private readonly INotificationService _notificationService;
 
-    public OrderService(DataContext context)
+    public OrderService(DataContext context, INotificationService notificationService)
     {
         _context = context;
+        _notificationService = notificationService;
     }
 
     public async Task<ServiceResponse<GetOrderDTO>> CreateOrder(CreateOrderDTO request, int? userId)
@@ -147,6 +149,8 @@ public class OrderService : IOrderService
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
+            _ = _notificationService.NotifyOrderCreated(order);
+
             response.Data = MapToGetOrderDTO(order);
             response.Message = "Order placed successfully!";
         }
@@ -247,6 +251,7 @@ public class OrderService : IOrderService
 
             if (Enum.TryParse<OrderStatus>(status, true, out var newStatus))
             {
+                var oldStatus = order.Status;
                 // If transitioning to Cancelled and was not already Cancelled: RESTOCK
                 if (newStatus == OrderStatus.Cancelled && order.Status != OrderStatus.Cancelled)
                 {
@@ -259,6 +264,7 @@ public class OrderService : IOrderService
                 }
 
                 order.Status = newStatus;
+                _ = _notificationService.NotifyOrderStatusChanged(order, oldStatus, newStatus);
             }
             order.UpdatedDateTime = DateTime.UtcNow;
 
@@ -332,6 +338,8 @@ public class OrderService : IOrderService
             order.UpdatedDateTime = DateTime.UtcNow;
             await _context.SaveChangesAsync();
 
+            _ = _notificationService.NotifyOrderCancelled(order, reason ?? "User requested cancellation");
+
             response.Data = MapToGetOrderDTO(order);
             response.Message = "Order cancelled successfully. Stock has been restored.";
         }
@@ -339,6 +347,41 @@ public class OrderService : IOrderService
         {
             response.Success = false;
             response.Message = ex.GetBaseException().Message;
+        }
+
+        return response;
+    }
+
+    public async Task<ServiceResponse<string>> GetOrderReceiptHtml(int id, int? userId, bool isAdmin)
+    {
+        var response = new ServiceResponse<string>();
+        try
+        {
+            var order = await _context.Orders
+                .Include(o => o.OrderItems)
+                .FirstOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                response.Success = false;
+                response.Message = "Order not found.";
+                return response;
+            }
+
+            if (!isAdmin && userId.HasValue && order.UserId != userId.Value)
+            {
+                response.Success = false;
+                response.Message = "Access denied.";
+                return response;
+            }
+
+            response.Data = _notificationService.GenerateReceiptHtml(order);
+            response.Message = "Receipt generated.";
+        }
+        catch (Exception ex)
+        {
+            response.Success = false;
+            response.Message = ex.Message;
         }
 
         return response;

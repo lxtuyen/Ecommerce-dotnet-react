@@ -180,4 +180,98 @@ public class PaymentService : IPaymentService
 
         return response;
     }
+
+    public async Task<ServiceResponse<bool>> HandleWebhookEvent(string json, string stripeSignature)
+    {
+        var response = new ServiceResponse<bool>();
+        try
+        {
+            Event stripeEvent;
+            var webhookSecret = _configuration["Stripe:WebhookSecret"];
+
+            if (!string.IsNullOrEmpty(webhookSecret) && !webhookSecret.Contains("Mock") && !string.IsNullOrEmpty(stripeSignature))
+            {
+                stripeEvent = EventUtility.ConstructEvent(json, stripeSignature, webhookSecret);
+            }
+            else
+            {
+                stripeEvent = EventUtility.ParseEvent(json);
+            }
+
+            if (stripeEvent.Type == "payment_intent.succeeded")
+            {
+                var paymentIntent = stripeEvent.Data.Object as PaymentIntent;
+                if (paymentIntent != null)
+                {
+                    var order = await _context.Orders
+                        .FirstOrDefaultAsync(o => o.PaymentIntentId == paymentIntent.Id);
+
+                    if (order != null)
+                    {
+                        order.PaymentStatus = PaymentStatus.Paid;
+                        if (order.Status == OrderStatus.Pending)
+                        {
+                            order.Status = OrderStatus.Processing;
+                        }
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+            else if (stripeEvent.Type == "payment_intent.payment_failed")
+            {
+                var paymentIntent = stripeEvent.Data.Object as PaymentIntent;
+                if (paymentIntent != null)
+                {
+                    var order = await _context.Orders
+                        .FirstOrDefaultAsync(o => o.PaymentIntentId == paymentIntent.Id);
+
+                    if (order != null)
+                    {
+                        order.PaymentStatus = PaymentStatus.Failed;
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+            else if (stripeEvent.Type == "charge.refunded")
+            {
+                var charge = stripeEvent.Data.Object as Charge;
+                if (charge != null && !string.IsNullOrEmpty(charge.PaymentIntentId))
+                {
+                    var order = await _context.Orders
+                        .Include(o => o.OrderItems)
+                        .FirstOrDefaultAsync(o => o.PaymentIntentId == charge.PaymentIntentId);
+
+                    if (order != null)
+                    {
+                        order.PaymentStatus = PaymentStatus.Refunded;
+                        if (order.Status != OrderStatus.Cancelled)
+                        {
+                            order.Status = OrderStatus.Cancelled;
+                            order.CancelReason = "Auto-cancelled due to Stripe charge refund";
+                            foreach (var item in order.OrderItems)
+                            {
+                                var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == item.ProductId);
+                                if (product != null)
+                                {
+                                    product.StockQuantity += item.Quantity;
+                                }
+                            }
+                        }
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+
+            response.Data = true;
+            response.Message = $"Processed Stripe event: {stripeEvent.Type}";
+        }
+        catch (Exception ex)
+        {
+            response.Success = false;
+            response.Message = $"Webhook processing error: {ex.Message}";
+        }
+
+        return response;
+    }
 }
+

@@ -162,6 +162,12 @@ export const ordersApi = {
     });
     return res.data;
   },
+  getReceiptHtml: async (id: number): Promise<string> => {
+    const res = await apiClient.get<string>(`/Orders/${id}/receipt`, {
+      headers: { Accept: 'text/html' },
+    });
+    return res.data;
+  },
 };
 
 // Payments API (Stripe)

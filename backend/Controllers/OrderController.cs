@@ -110,4 +110,21 @@ public class OrderController : ControllerBase
         }
         return Ok(response);
     }
+
+    [HttpGet("{id}/receipt")]
+    [Authorize]
+    public async Task<IActionResult> GetReceipt(int id)
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        int? userId = int.TryParse(userIdClaim, out int uid) ? uid : null;
+        var isAdmin = User.IsInRole("Admin");
+
+        var response = await _orderService.GetOrderReceiptHtml(id, userId, isAdmin);
+        if (!response.Success)
+        {
+            return NotFound(response);
+        }
+
+        return Content(response.Data ?? "", "text/html; charset=utf-8");
+    }
 }
