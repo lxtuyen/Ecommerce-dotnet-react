@@ -13,6 +13,7 @@ public class CreatePaymentIntentDTO
     public List<PaymentCartItemDTO> Items { get; set; } = new();
     public string? CustomerEmail { get; set; }
     public string? CustomerName { get; set; }
+    public string? CouponCode { get; set; }
 }
 
 public class PaymentIntentResponseDTO
@@ -22,6 +23,7 @@ public class PaymentIntentResponseDTO
     public decimal Amount { get; set; }
     public string Currency { get; set; } = "usd";
     public decimal Subtotal { get; set; }
+    public decimal DiscountAmount { get; set; }
     public decimal ShippingFee { get; set; }
 }
 

@@ -216,6 +216,11 @@ export const OrdersPage: React.FC = () => {
                     </div>
                     <div className="text-xs text-slate-400 mt-1">
                       Placed on {formatDate(order.createdDateTime)} • {order.paymentMethod}
+                      {order.couponCode && (
+                        <span className="text-emerald-600 dark:text-emerald-400 font-semibold ml-2">
+                          • Voucher {order.couponCode} (-{formatCurrency(order.discountAmount || 0)})
+                        </span>
+                      )}
                     </div>
                   </div>
 

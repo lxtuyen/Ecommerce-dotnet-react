@@ -1,6 +1,8 @@
 import axios, { AxiosError } from 'axios';
 import {
   Category,
+  Coupon,
+  CouponValidationResult,
   CreateOrderPayload,
   Order,
   PaymentIntentPayload,
@@ -171,3 +173,19 @@ export const paymentsApi = {
     return res.data;
   },
 };
+
+// Coupons API
+export const couponsApi = {
+  validate: async (code: string, subtotal: number) => {
+    const res = await apiClient.post<ServiceResponse<CouponValidationResult>>(
+      '/Coupons/validate',
+      { code, subtotal }
+    );
+    return res.data;
+  },
+  getAll: async () => {
+    const res = await apiClient.get<ServiceResponse<Coupon[]>>('/Coupons');
+    return res.data.data || [];
+  },
+};
+

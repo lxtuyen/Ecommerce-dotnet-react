@@ -33,6 +33,8 @@ public class Order : BaseModel
     public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.Pending;
     public string? PaymentIntentId { get; set; }
     public decimal ShippingFee { get; set; } = 0;
+    public string? CouponCode { get; set; }
+    public decimal DiscountAmount { get; set; } = 0;
     public OrderStatus Status { get; set; } = OrderStatus.Pending;
     public decimal TotalAmount { get; set; }
     public string? Notes { get; set; }

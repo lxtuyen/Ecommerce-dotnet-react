@@ -81,12 +81,42 @@ public class PaymentService : IPaymentService
                 subtotal += prod.Price * item.Quantity;
             }
 
-            // 3. Calculate shipping fee and grand total
+            // 3. Check and apply coupon discount if provided
+            decimal discountAmount = 0;
+            if (!string.IsNullOrWhiteSpace(request.CouponCode))
+            {
+                var cleanCode = request.CouponCode.Trim().ToUpper();
+                var coupon = await _context.Coupons
+                    .FirstOrDefaultAsync(c => c.Code.ToUpper() == cleanCode && c.IsActive);
+
+                if (coupon != null &&
+                    (!coupon.ExpiryDate.HasValue || coupon.ExpiryDate.Value >= DateTime.UtcNow) &&
+                    (!coupon.UsageLimit.HasValue || coupon.UsedCount < coupon.UsageLimit.Value) &&
+                    subtotal >= coupon.MinOrderAmount)
+                {
+                    decimal d = 0;
+                    if (coupon.DiscountType == DiscountType.Percentage)
+                    {
+                        d = subtotal * (coupon.DiscountValue / 100m);
+                        if (coupon.MaxDiscountAmount.HasValue && d > coupon.MaxDiscountAmount.Value)
+                        {
+                            d = coupon.MaxDiscountAmount.Value;
+                        }
+                    }
+                    else
+                    {
+                        d = Math.Min(subtotal, coupon.DiscountValue);
+                    }
+                    discountAmount = Math.Round(d, 2);
+                }
+            }
+
+            // 4. Calculate shipping fee and grand total
             decimal shippingFee = subtotal >= 150m ? 0m : 9.99m;
-            decimal grandTotal = subtotal + shippingFee;
+            decimal grandTotal = Math.Max(0, subtotal - discountAmount) + shippingFee;
             long amountInCents = (long)Math.Round(grandTotal * 100);
 
-            // 4. Check if actual Stripe key is configured or use local demo intent
+            // 5. Check if actual Stripe key is configured or use local demo intent
             if (string.IsNullOrEmpty(_stripeSecretKey) || _stripeSecretKey.Contains("MockKey") || _stripeSecretKey.Contains("ReplaceWith"))
             {
                 response.Data = new PaymentIntentResponseDTO
@@ -96,6 +126,7 @@ public class PaymentService : IPaymentService
                     Amount = grandTotal,
                     Currency = "usd",
                     Subtotal = subtotal,
+                    DiscountAmount = discountAmount,
                     ShippingFee = shippingFee
                 };
                 response.Message = "Demo payment intent initialized. Configure Stripe:SecretKey in appsettings.json for real Stripe gateway.";
@@ -116,6 +147,8 @@ public class PaymentService : IPaymentService
                     { "userId", userId.ToString() },
                     { "customerEmail", request.CustomerEmail ?? "" },
                     { "customerName", request.CustomerName ?? "" },
+                    { "couponCode", request.CouponCode ?? "" },
+                    { "discountAmount", discountAmount.ToString("0.00") },
                     { "itemCount", request.Items.Count.ToString() }
                 }
             };
@@ -129,6 +162,7 @@ public class PaymentService : IPaymentService
                 Amount = grandTotal,
                 Currency = "usd",
                 Subtotal = subtotal,
+                DiscountAmount = discountAmount,
                 ShippingFee = shippingFee
             };
             response.Message = "Payment intent created successfully.";

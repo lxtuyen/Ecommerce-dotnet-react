@@ -71,6 +71,11 @@ export const OrderSuccessPage: React.FC = () => {
                 </span>
               )}
             </p>
+            {order.couponCode && (
+              <p className="text-emerald-600 dark:text-emerald-400 font-semibold">
+                <strong>Coupon Discount:</strong> {order.couponCode} (-{formatCurrency(order.discountAmount || 0)})
+              </p>
+            )}
           </div>
         </div>
       )}

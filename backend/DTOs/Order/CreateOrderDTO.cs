@@ -20,6 +20,7 @@ public class CreateOrderDTO
     public string PaymentMethod { get; set; } = "Credit Card";
     public string? PaymentIntentId { get; set; }
     public decimal ShippingFee { get; set; } = 0;
+    public string? CouponCode { get; set; }
     public string? Notes { get; set; }
     public List<CreateOrderItemDTO> Items { get; set; } = new();
 }

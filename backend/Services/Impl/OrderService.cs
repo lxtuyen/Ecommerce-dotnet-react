@@ -81,8 +81,41 @@ public class OrderService : IOrderService
                 });
             }
 
+            // 3. Check and apply coupon discount if provided
+            decimal discountAmount = 0;
+            string? appliedCouponCode = null;
+            if (!string.IsNullOrWhiteSpace(request.CouponCode))
+            {
+                var cleanCode = request.CouponCode.Trim().ToUpper();
+                var coupon = await _context.Coupons
+                    .FirstOrDefaultAsync(c => c.Code.ToUpper() == cleanCode && c.IsActive);
+
+                if (coupon != null &&
+                    (!coupon.ExpiryDate.HasValue || coupon.ExpiryDate.Value >= DateTime.UtcNow) &&
+                    (!coupon.UsageLimit.HasValue || coupon.UsedCount < coupon.UsageLimit.Value) &&
+                    subtotal >= coupon.MinOrderAmount)
+                {
+                    decimal d = 0;
+                    if (coupon.DiscountType == DiscountType.Percentage)
+                    {
+                        d = subtotal * (coupon.DiscountValue / 100m);
+                        if (coupon.MaxDiscountAmount.HasValue && d > coupon.MaxDiscountAmount.Value)
+                        {
+                            d = coupon.MaxDiscountAmount.Value;
+                        }
+                    }
+                    else
+                    {
+                        d = Math.Min(subtotal, coupon.DiscountValue);
+                    }
+                    discountAmount = Math.Round(d, 2);
+                    appliedCouponCode = coupon.Code;
+                    coupon.UsedCount += 1;
+                }
+            }
+
             decimal shippingFee = subtotal >= 150m ? 0m : 9.99m;
-            decimal grandTotal = subtotal + shippingFee;
+            decimal grandTotal = Math.Max(0, subtotal - discountAmount) + shippingFee;
 
             var paymentStatus = PaymentStatus.Pending;
             if (request.PaymentMethod == "Credit Card" && !string.IsNullOrEmpty(request.PaymentIntentId))
@@ -101,6 +134,8 @@ public class OrderService : IOrderService
                 PaymentStatus = paymentStatus,
                 PaymentIntentId = request.PaymentIntentId,
                 ShippingFee = shippingFee,
+                CouponCode = appliedCouponCode,
+                DiscountAmount = discountAmount,
                 Status = OrderStatus.Processing,
                 TotalAmount = grandTotal,
                 Notes = request.Notes,
@@ -342,6 +377,8 @@ public class OrderService : IOrderService
             PaymentStatus = order.PaymentStatus.ToString(),
             PaymentIntentId = order.PaymentIntentId,
             ShippingFee = order.ShippingFee,
+            CouponCode = order.CouponCode,
+            DiscountAmount = order.DiscountAmount,
             Status = order.Status.ToString(),
             TotalAmount = order.TotalAmount,
             Notes = order.Notes,

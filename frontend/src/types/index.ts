@@ -61,6 +61,8 @@ export interface Order {
   paymentStatus?: PaymentStatus;
   paymentIntentId?: string;
   shippingFee?: number;
+  couponCode?: string;
+  discountAmount?: number;
   status: OrderStatus;
   totalAmount: number;
   notes?: string;
@@ -77,6 +79,7 @@ export interface CreateOrderPayload {
   paymentMethod: string;
   paymentIntentId?: string;
   shippingFee?: number;
+  couponCode?: string;
   notes?: string;
   items: {
     productId: number;
@@ -91,6 +94,7 @@ export interface PaymentIntentPayload {
   items: { productId: number; quantity: number }[];
   customerEmail?: string;
   customerName?: string;
+  couponCode?: string;
 }
 
 export interface PaymentIntentResponse {
@@ -99,11 +103,37 @@ export interface PaymentIntentResponse {
   amount: number;
   currency: string;
   subtotal: number;
+  discountAmount?: number;
   shippingFee: number;
 }
 
 export interface StripeConfigResponse {
   publishableKey: string;
+}
+
+export interface CouponValidationResult {
+  code: string;
+  description: string;
+  discountType: string;
+  discountValue: number;
+  discountAmount: number;
+  minOrderAmount: number;
+  isValid: boolean;
+  message: string;
+}
+
+export interface Coupon {
+  id: number;
+  code: string;
+  description: string;
+  discountType: string;
+  discountValue: number;
+  minOrderAmount: number;
+  maxDiscountAmount?: number;
+  expiryDate?: string;
+  usageLimit?: number;
+  usedCount: number;
+  isActive: boolean;
 }
 
 export interface ServiceResponse<T> {

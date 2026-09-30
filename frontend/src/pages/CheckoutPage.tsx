@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCartStore } from '@/stores/useCartStore';
 import { useAuthStore } from '@/stores/useAuthStore';
-import { ordersApi, paymentsApi } from '@/services/api';
-import { PaymentIntentResponse } from '@/types';
+import { ordersApi, paymentsApi, couponsApi } from '@/services/api';
+import { PaymentIntentResponse, CouponValidationResult } from '@/types';
 import { formatCurrency } from '@/utils/formatters';
 import { StripePaymentForm } from '@/components/checkout/StripePaymentForm';
 import {
@@ -15,6 +15,10 @@ import {
   ShoppingBag,
   Loader2,
   AlertCircle,
+  Tag,
+  Check,
+  X,
+  Sparkles,
 } from 'lucide-react';
 
 export const CheckoutPage: React.FC = () => {
@@ -53,15 +57,22 @@ export const CheckoutPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
+  // Coupon state
+  const [couponCodeInput, setCouponCodeInput] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<CouponValidationResult | null>(null);
+  const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
+  const [couponMsg, setCouponMsg] = useState<{ text: string; isError: boolean } | null>(null);
+
   // Stripe Payment Intent State
   const [paymentIntent, setPaymentIntent] = useState<PaymentIntentResponse | null>(null);
   const [isLoadingIntent, setIsLoadingIntent] = useState(false);
 
   const subtotal = getTotalPrice();
+  const discountAmount = appliedCoupon?.isValid ? appliedCoupon.discountAmount : 0;
   const shippingFee = subtotal >= 150 ? 0 : 9.99;
-  const grandTotal = subtotal + shippingFee;
+  const grandTotal = Math.max(0, subtotal - discountAmount) + shippingFee;
 
-  // Initialize Payment Intent whenever cart or user email changes
+  // Initialize or update Payment Intent whenever cart or applied coupon changes
   useEffect(() => {
     if (items.length === 0 || !isAuthenticated) return;
 
@@ -73,6 +84,7 @@ export const CheckoutPage: React.FC = () => {
           items: items.map((i) => ({ productId: i.productId, quantity: i.quantity })),
           customerEmail: formData.email,
           customerName: formData.name,
+          couponCode: appliedCoupon?.code,
         });
 
         if (isMounted && res.success && res.data) {
@@ -90,7 +102,7 @@ export const CheckoutPage: React.FC = () => {
     return () => {
       isMounted = false;
     };
-  }, [items, isAuthenticated]);
+  }, [items, isAuthenticated, appliedCoupon?.code]);
 
   if (!isAuthenticated) {
     return null;
@@ -116,6 +128,40 @@ export const CheckoutPage: React.FC = () => {
     );
   }
 
+  const handleApplyCoupon = async (codeToApply?: string) => {
+    const code = (codeToApply || couponCodeInput).trim();
+    if (!code) {
+      setCouponMsg({ text: 'Please enter a coupon code.', isError: true });
+      return;
+    }
+
+    setIsValidatingCoupon(true);
+    setCouponMsg(null);
+
+    try {
+      const res = await couponsApi.validate(code, subtotal);
+      if (res.success && res.data && res.data.isValid) {
+        setAppliedCoupon(res.data);
+        setCouponMsg({ text: res.data.message, isError: false });
+        setCouponCodeInput(res.data.code);
+      } else {
+        setCouponMsg({ text: res.message || 'Invalid coupon code.', isError: true });
+        setAppliedCoupon(null);
+      }
+    } catch (err: any) {
+      setCouponMsg({ text: err.message || 'Could not apply coupon.', isError: true });
+      setAppliedCoupon(null);
+    } finally {
+      setIsValidatingCoupon(false);
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponCodeInput('');
+    setCouponMsg(null);
+  };
+
   const completeOrderWithBackend = async (paymentIntentId?: string) => {
     const payload = {
       customerName: formData.name,
@@ -125,6 +171,7 @@ export const CheckoutPage: React.FC = () => {
       paymentMethod,
       paymentIntentId,
       shippingFee,
+      couponCode: appliedCoupon?.code,
       notes: formData.notes,
       items: items.map((i) => ({
         productId: i.productId,
@@ -417,6 +464,100 @@ export const CheckoutPage: React.FC = () => {
               ))}
             </div>
 
+            {/* Coupon / Voucher Section */}
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2.5">
+              <label className="block text-xs font-bold uppercase text-slate-500 flex items-center gap-1.5">
+                <Tag className="w-3.5 h-3.5 text-emerald-500" />
+                <span>Promotional Voucher</span>
+              </label>
+
+              {appliedCoupon ? (
+                <div className="flex items-center justify-between p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-xs">
+                  <div className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                    <div>
+                      <span className="font-extrabold text-emerald-800 dark:text-emerald-300 font-mono tracking-wider">
+                        {appliedCoupon.code}
+                      </span>
+                      <p className="text-[11px] text-emerald-600 dark:text-emerald-400">
+                        {appliedCoupon.description}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleRemoveCoupon}
+                    className="p-1 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors cursor-pointer"
+                    title="Remove coupon"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={couponCodeInput}
+                      onChange={(e) => setCouponCodeInput(e.target.value.toUpperCase())}
+                      placeholder="e.g. WELCOME10"
+                      className="flex-1 px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white uppercase font-mono focus:outline-none focus:border-zinc-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleApplyCoupon()}
+                      disabled={isValidatingCoupon || !couponCodeInput.trim()}
+                      className="px-4 py-2 text-xs font-bold rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 disabled:opacity-50 transition-colors flex items-center gap-1.5 cursor-pointer"
+                    >
+                      {isValidatingCoupon ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <span>Apply</span>
+                      )}
+                    </button>
+                  </div>
+
+                  {couponMsg && (
+                    <p
+                      className={`text-[11px] font-medium ${
+                        couponMsg.isError
+                          ? 'text-rose-600 dark:text-rose-400'
+                          : 'text-emerald-600 dark:text-emerald-400'
+                      }`}
+                    >
+                      {couponMsg.text}
+                    </p>
+                  )}
+
+                  {/* Quick Suggestions Chips */}
+                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase">Try:</span>
+                    <button
+                      type="button"
+                      onClick={() => handleApplyCoupon('WELCOME10')}
+                      className="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-300 hover:bg-emerald-50 hover:text-emerald-600 transition-colors font-mono cursor-pointer"
+                    >
+                      WELCOME10 (-10%)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleApplyCoupon('TECH50')}
+                      className="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-300 hover:bg-emerald-50 hover:text-emerald-600 transition-colors font-mono cursor-pointer"
+                    >
+                      TECH50 (-$50)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleApplyCoupon('FREESHIP')}
+                      className="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-300 hover:bg-emerald-50 hover:text-emerald-600 transition-colors font-mono cursor-pointer"
+                    >
+                      FREESHIP
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Total Lines */}
             <div className="space-y-2 pt-4 border-t border-slate-100 dark:border-slate-800 text-xs">
               <div className="flex justify-between text-slate-500">
@@ -425,12 +566,24 @@ export const CheckoutPage: React.FC = () => {
                   {formatCurrency(subtotal)}
                 </span>
               </div>
+
+              {discountAmount > 0 && (
+                <div className="flex justify-between text-emerald-600 dark:text-emerald-400 font-semibold">
+                  <span className="flex items-center gap-1">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Coupon ({appliedCoupon?.code})</span>
+                  </span>
+                  <span>-{formatCurrency(discountAmount)}</span>
+                </div>
+              )}
+
               <div className="flex justify-between text-slate-500">
                 <span>Shipping</span>
                 <span className="font-semibold text-emerald-600">
                   {shippingFee === 0 ? 'FREE' : formatCurrency(shippingFee)}
                 </span>
               </div>
+
               <div className="flex justify-between text-base font-extrabold text-slate-900 dark:text-white pt-2 border-t border-slate-200 dark:border-slate-800">
                 <span>Total Due</span>
                 <span className="text-zinc-900 dark:text-zinc-100">
