@@ -58,7 +58,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
           {/* Title */}
           <Link to={`/product/${product.id}`}>
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white line-clamp-1 group-hover:text-zinc-900 dark:text-zinc-100 dark:group-hover:text-zinc-400 transition-colors">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white line-clamp-1 group-hover:text-primary-500 transition-colors">
               {product.name}
             </h3>
           </Link>
@@ -85,7 +85,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             className={`p-2.5 rounded-xl font-semibold text-xs transition-all flex items-center gap-1.5 ${
               isInCart
                 ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800'
-                : 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white shadow-md shadow-zinc-950/20 hover:shadow-zinc-950/25'
+                : 'bg-primary-500 hover:bg-primary-600 text-white shadow-electric hover:shadow-electric-lg'
             }`}
             title="Add to cart"
           >

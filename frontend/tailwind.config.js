@@ -8,33 +8,39 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Minimalist Stealth & Titanium Palette (Apple / Nothing Store inspired)
+        // Vibrant Electric Sky Blue (0xFF42A6ED) Palette
         primary: {
-          50: '#fafafa',
-          100: '#f4f4f5',
-          200: '#e4e4e7',
-          300: '#d4d4d8',
-          400: '#a1a1aa',
-          500: '#71717a',
-          600: '#18181b', // Obsidian Dark
-          700: '#09090b', // Pure Charcoal
-          800: '#040405',
-          900: '#000000',
-          950: '#000000',
+          50: '#f0f9ff',
+          100: '#e0f2fe',
+          200: '#bae6fd',
+          300: '#7dd3fc',
+          400: '#5abdf5',
+          500: '#42A6ED', // Brand Core (0xFF42A6ED)
+          600: '#258cd6', // Hover State
+          700: '#1b6eac', // Active State
+          800: '#1a598a',
+          900: '#1b4a72',
+          950: '#112f4c',
+          DEFAULT: '#42A6ED',
         },
         indigo: {
-          50: '#fafafa',
-          100: '#f4f4f5',
-          200: '#e4e4e7',
-          300: '#d4d4d8',
-          400: '#a1a1aa',
-          500: '#71717a',
-          600: '#18181b', // Obsidian deep black/charcoal
-          700: '#09090b', // Ultra dark
-          800: '#040405',
-          900: '#000000',
-          950: '#000000',
+          50: '#f0f9ff',
+          100: '#e0f2fe',
+          200: '#bae6fd',
+          300: '#7dd3fc',
+          400: '#5abdf5',
+          500: '#42A6ED',
+          600: '#258cd6',
+          700: '#1b6eac',
+          800: '#1a598a',
+          900: '#1b4a72',
+          950: '#112f4c',
+          DEFAULT: '#42A6ED',
         },
+      },
+      boxShadow: {
+        'electric': '0 4px 18px -2px rgba(66, 166, 237, 0.38)',
+        'electric-lg': '0 8px 25px -4px rgba(66, 166, 237, 0.45)',
       },
       fontFamily: {
         sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],

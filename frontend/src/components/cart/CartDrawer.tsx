@@ -181,7 +181,7 @@ export const CartDrawer: React.FC = () => {
               <div className="flex flex-col gap-2">
                 <button
                   onClick={handleProceedToCheckout}
-                  className="w-full py-3.5 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white font-bold text-sm shadow-lg shadow-zinc-950/20 flex items-center justify-center gap-2 transition-all hover:shadow-zinc-950/25"
+                  className="w-full py-3.5 rounded-xl bg-primary-500 hover:bg-primary-600 text-white font-bold text-sm shadow-electric hover:shadow-electric-lg flex items-center justify-center gap-2 transition-all"
                 >
                   <span>Checkout Now</span>
                   <ArrowRight className="w-4 h-4" />

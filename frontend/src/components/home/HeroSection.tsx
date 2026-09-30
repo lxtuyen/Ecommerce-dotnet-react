@@ -12,11 +12,6 @@ export const HeroSection: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           {/* Left Text Content */}
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-xs font-semibold text-zinc-800 dark:text-zinc-200 shadow-sm">
-              <Sparkles className="w-3.5 h-3.5 text-zinc-700 dark:text-zinc-300" />
-              <span>Next-Generation Flagship Tech 2026</span>
-            </div>
-
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15]">
               Experience Tomorrow&apos;s Technology{' '}
               <span className="bg-gradient-to-r from-zinc-900 via-zinc-600 to-zinc-400 dark:from-white dark:via-zinc-200 dark:to-zinc-400 bg-clip-text text-transparent">
@@ -32,7 +27,7 @@ export const HeroSection: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">
               <Link
                 to="/shop"
-                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-bold text-sm shadow-xl shadow-zinc-950/20 flex items-center justify-center gap-2 group transition-all"
+                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-primary-500 hover:bg-primary-600 text-white font-bold text-sm shadow-electric hover:shadow-electric-lg flex items-center justify-center gap-2 group transition-all"
               >
                 <span>Shop Catalog</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -72,9 +67,6 @@ export const HeroSection: React.FC = () => {
                   className="w-full h-80 sm:h-96 object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent flex flex-col justify-end p-6 sm:p-8">
-                  <span className="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-1">
-                    Featured Release
-                  </span>
                   <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">
                     Titanium Pro Max 256GB
                   </h3>

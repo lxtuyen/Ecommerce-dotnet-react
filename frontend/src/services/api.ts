@@ -3,8 +3,11 @@ import {
   Category,
   CreateOrderPayload,
   Order,
+  PaymentIntentPayload,
+  PaymentIntentResponse,
   Product,
   ServiceResponse,
+  StripeConfigResponse,
   User,
 } from '@/types';
 
@@ -144,6 +147,21 @@ export const ordersApi = {
     const res = await apiClient.patch<ServiceResponse<Order>>(`/Orders/${id}/status`, {
       status,
     });
+    return res.data;
+  },
+};
+
+// Payments API (Stripe)
+export const paymentsApi = {
+  getConfig: async () => {
+    const res = await apiClient.get<ServiceResponse<StripeConfigResponse>>('/Payments/config');
+    return res.data.data;
+  },
+  createPaymentIntent: async (payload: PaymentIntentPayload) => {
+    const res = await apiClient.post<ServiceResponse<PaymentIntentResponse>>(
+      '/Payments/create-payment-intent',
+      payload
+    );
     return res.data;
   },
 };

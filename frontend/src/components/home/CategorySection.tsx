@@ -4,12 +4,26 @@ import { useQuery } from '@tanstack/react-query';
 import { categoriesApi } from '@/services/api';
 import { Smartphone, Laptop, Headphones, Watch, Cable, Grid, ArrowRight } from 'lucide-react';
 
-const iconMap: Record<string, React.ReactNode> = {
-  Smartphone: <Smartphone className="w-6 h-6" />,
-  Laptop: <Laptop className="w-6 h-6" />,
-  Headphones: <Headphones className="w-6 h-6" />,
-  Watch: <Watch className="w-6 h-6" />,
-  Cable: <Cable className="w-6 h-6" />,
+const getCategoryIcon = (cat: { icon?: string; name: string }) => {
+  const iconKey = cat.icon?.toLowerCase() || '';
+  const nameKey = cat.name.toLowerCase();
+
+  if (iconKey === 'smartphone' || nameKey.includes('phone')) {
+    return <Smartphone className="w-6 h-6" />;
+  }
+  if (iconKey === 'laptop' || nameKey.includes('laptop') || nameKey.includes('computer')) {
+    return <Laptop className="w-6 h-6" />;
+  }
+  if (iconKey === 'headphones' || nameKey.includes('headphone') || nameKey.includes('audio') || nameKey.includes('sound')) {
+    return <Headphones className="w-6 h-6" />;
+  }
+  if (iconKey === 'watch' || nameKey.includes('watch') || nameKey.includes('wearable')) {
+    return <Watch className="w-6 h-6" />;
+  }
+  if (iconKey === 'cable' || nameKey.includes('access') || nameKey.includes('cable') || nameKey.includes('charger')) {
+    return <Cable className="w-6 h-6" />;
+  }
+  return <Grid className="w-6 h-6" />;
 };
 
 export const CategorySection: React.FC = () => {
@@ -54,8 +68,8 @@ export const CategorySection: React.FC = () => {
                   to={`/shop?category=${encodeURIComponent(cat.name)}`}
                   className="group relative rounded-2xl p-5 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-zinc-400 dark:hover:border-zinc-400 transition-all duration-300 flex flex-col items-center text-center overflow-hidden"
                 >
-                  <div className="w-14 h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800/60 text-zinc-900 dark:text-zinc-100 flex items-center justify-center mb-3 group-hover:scale-110 group-hover:bg-zinc-900 dark:group-hover:bg-white group-hover:text-white transition-all duration-300 shadow-sm">
-                    {iconMap[cat.icon || ''] || <Grid className="w-6 h-6" />}
+                  <div className="w-14 h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800/80 text-zinc-900 dark:text-zinc-100 flex items-center justify-center mb-3 group-hover:scale-110 group-hover:bg-zinc-900 dark:group-hover:bg-white group-hover:text-white dark:group-hover:text-zinc-900 transition-all duration-300 shadow-sm border border-zinc-200/60 dark:border-zinc-700/60">
+                    {getCategoryIcon(cat)}
                   </div>
                   <h4 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-zinc-900 dark:text-zinc-100 dark:group-hover:text-zinc-400 transition-colors">
                     {cat.name}

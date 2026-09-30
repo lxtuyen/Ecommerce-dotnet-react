@@ -37,7 +37,58 @@ public class OrderService : IOrderService
                 return response;
             }
 
-            decimal total = request.Items.Sum(i => i.Price * i.Quantity);
+            // 1. Fetch real products from DB to prevent client price tampering
+            var productIds = request.Items.Select(i => i.ProductId).Distinct().ToList();
+            var products = await _context.Products
+                .Where(p => productIds.Contains(p.Id))
+                .ToListAsync();
+
+            if (products.Count != productIds.Count)
+            {
+                response.Success = false;
+                response.Message = "One or more items in your cart do not exist.";
+                return response;
+            }
+
+            // 2. Validate stock & calculate authentic subtotal
+            decimal subtotal = 0;
+            var orderItems = new List<OrderItem>();
+
+            foreach (var item in request.Items)
+            {
+                var prod = products.First(p => p.Id == item.ProductId);
+                if (prod.StockQuantity < item.Quantity)
+                {
+                    response.Success = false;
+                    response.Message = $"Product '{prod.Name}' has only {prod.StockQuantity} items remaining in stock.";
+                    return response;
+                }
+
+                // Deduct stock
+                prod.StockQuantity -= item.Quantity;
+
+                subtotal += prod.Price * item.Quantity;
+
+                orderItems.Add(new OrderItem
+                {
+                    ProductId = prod.Id,
+                    ProductName = prod.Name,
+                    ProductImage = prod.Image,
+                    Price = prod.Price, // Server-verified price
+                    Quantity = item.Quantity,
+                    CreatedDateTime = DateTime.UtcNow,
+                    UpdatedDateTime = DateTime.UtcNow
+                });
+            }
+
+            decimal shippingFee = subtotal >= 150m ? 0m : 9.99m;
+            decimal grandTotal = subtotal + shippingFee;
+
+            var paymentStatus = PaymentStatus.Pending;
+            if (request.PaymentMethod == "Credit Card" && !string.IsNullOrEmpty(request.PaymentIntentId))
+            {
+                paymentStatus = PaymentStatus.Paid;
+            }
 
             var order = new Order
             {
@@ -47,21 +98,15 @@ public class OrderService : IOrderService
                 ShippingAddress = request.ShippingAddress,
                 PhoneNumber = request.PhoneNumber,
                 PaymentMethod = request.PaymentMethod,
-                Notes = request.Notes,
+                PaymentStatus = paymentStatus,
+                PaymentIntentId = request.PaymentIntentId,
+                ShippingFee = shippingFee,
                 Status = OrderStatus.Processing,
-                TotalAmount = total,
+                TotalAmount = grandTotal,
+                Notes = request.Notes,
                 CreatedDateTime = DateTime.UtcNow,
                 UpdatedDateTime = DateTime.UtcNow,
-                OrderItems = request.Items.Select(item => new OrderItem
-                {
-                    ProductId = item.ProductId,
-                    ProductName = item.ProductName,
-                    ProductImage = item.ProductImage,
-                    Price = item.Price,
-                    Quantity = item.Quantity,
-                    CreatedDateTime = DateTime.UtcNow,
-                    UpdatedDateTime = DateTime.UtcNow
-                }).ToList()
+                OrderItems = orderItems
             };
 
             _context.Orders.Add(order);
@@ -195,6 +240,9 @@ public class OrderService : IOrderService
             ShippingAddress = order.ShippingAddress,
             PhoneNumber = order.PhoneNumber,
             PaymentMethod = order.PaymentMethod,
+            PaymentStatus = order.PaymentStatus.ToString(),
+            PaymentIntentId = order.PaymentIntentId,
+            ShippingFee = order.ShippingFee,
             Status = order.Status.ToString(),
             TotalAmount = order.TotalAmount,
             Notes = order.Notes,

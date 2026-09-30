@@ -201,7 +201,7 @@ export const Navbar: React.FC = () => {
             >
               <ShoppingBag className="w-5 h-5" />
               {getTotalItems() > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 text-[11px] font-bold flex items-center justify-center shadow-md animate-scale">
+                <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-primary-500 text-white text-[11px] font-bold flex items-center justify-center shadow-electric animate-scale">
                   {getTotalItems()}
                 </span>
               )}
@@ -214,14 +214,14 @@ export const Navbar: React.FC = () => {
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                   className="flex items-center gap-2 p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                 >
-                  <div className="w-8 h-8 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold text-xs flex items-center justify-center shadow-sm">
+                  <div className="w-8 h-8 rounded-full bg-primary-500 text-white font-bold text-xs flex items-center justify-center shadow-electric">
                     {user.initials || user.name.slice(0, 2).toUpperCase()}
                   </div>
                 </button>
               ) : (
                 <Link
                   to="/login"
-                  className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-full bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-zinc-950 shadow-md shadow-zinc-950/10 transition-all"
+                  className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-full bg-primary-500 hover:bg-primary-600 text-white shadow-electric transition-all"
                 >
                   <UserIcon className="w-4 h-4" />
                   <span>Sign In</span>

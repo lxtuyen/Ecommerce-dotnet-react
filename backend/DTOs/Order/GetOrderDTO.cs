@@ -22,6 +22,9 @@ public class GetOrderDTO
     public string ShippingAddress { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
     public string PaymentMethod { get; set; } = string.Empty;
+    public string PaymentStatus { get; set; } = "Pending";
+    public string? PaymentIntentId { get; set; }
+    public decimal ShippingFee { get; set; } = 0;
     public string Status { get; set; } = string.Empty;
     public decimal TotalAmount { get; set; }
     public string? Notes { get; set; }

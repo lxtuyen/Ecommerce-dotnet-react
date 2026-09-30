@@ -48,6 +48,7 @@ export interface OrderItem {
 }
 
 export type OrderStatus = 'Pending' | 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled';
+export type PaymentStatus = 'Pending' | 'Paid' | 'Failed' | 'Refunded';
 
 export interface Order {
   id: number;
@@ -57,6 +58,9 @@ export interface Order {
   shippingAddress: string;
   phoneNumber: string;
   paymentMethod: string;
+  paymentStatus?: PaymentStatus;
+  paymentIntentId?: string;
+  shippingFee?: number;
   status: OrderStatus;
   totalAmount: number;
   notes?: string;
@@ -70,6 +74,8 @@ export interface CreateOrderPayload {
   shippingAddress: string;
   phoneNumber: string;
   paymentMethod: string;
+  paymentIntentId?: string;
+  shippingFee?: number;
   notes?: string;
   items: {
     productId: number;
@@ -78,6 +84,25 @@ export interface CreateOrderPayload {
     price: number;
     quantity: number;
   }[];
+}
+
+export interface PaymentIntentPayload {
+  items: { productId: number; quantity: number }[];
+  customerEmail?: string;
+  customerName?: string;
+}
+
+export interface PaymentIntentResponse {
+  clientSecret: string;
+  publishableKey: string;
+  amount: number;
+  currency: string;
+  subtotal: number;
+  shippingFee: number;
+}
+
+export interface StripeConfigResponse {
+  publishableKey: string;
 }
 
 export interface ServiceResponse<T> {
