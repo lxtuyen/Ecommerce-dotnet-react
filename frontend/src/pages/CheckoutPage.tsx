@@ -10,7 +10,6 @@ import { StripePaymentForm } from '@/components/checkout/StripePaymentForm';
 import {
   ShieldCheck,
   CreditCard,
-  QrCode,
   Truck,
   ArrowRight,
   ShoppingBag,
@@ -50,9 +49,7 @@ export const CheckoutPage: React.FC = () => {
     }
   }, [user]);
 
-  const [paymentMethod, setPaymentMethod] = useState<'Credit Card' | 'QR Pay' | 'COD'>(
-    'Credit Card'
-  );
+  const [paymentMethod, setPaymentMethod] = useState<'Credit Card' | 'COD'>('Credit Card');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -161,7 +158,6 @@ export const CheckoutPage: React.FC = () => {
 
     try {
       if (paymentMethod === 'Credit Card') {
-        // If Stripe real key is present, the Stripe checkout will confirm payment and call completeOrderWithBackend
         // For local test sandbox, simulate a secure Stripe transaction
         await new Promise((r) => setTimeout(r, 1200));
         const simulatedIntentId =
@@ -172,7 +168,7 @@ export const CheckoutPage: React.FC = () => {
 
         await completeOrderWithBackend(simulatedIntentId);
       } else {
-        // COD or QR Pay
+        // Cash on Delivery
         await completeOrderWithBackend(undefined);
       }
     } catch (err: any) {
@@ -317,7 +313,7 @@ export const CheckoutPage: React.FC = () => {
               2. Payment Method
             </h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <label
                 className={`p-4 rounded-2xl border cursor-pointer flex flex-col items-center text-center gap-2 transition-all ${
                   paymentMethod === 'Credit Card'
@@ -338,26 +334,8 @@ export const CheckoutPage: React.FC = () => {
 
               <label
                 className={`p-4 rounded-2xl border cursor-pointer flex flex-col items-center text-center gap-2 transition-all ${
-                  paymentMethod === 'QR Pay'
-                    ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-100/50 dark:bg-zinc-800/40 text-zinc-900 dark:text-zinc-100 font-bold'
-                    : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800'
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="payment"
-                  checked={paymentMethod === 'QR Pay'}
-                  onChange={() => setPaymentMethod('QR Pay')}
-                  className="sr-only"
-                />
-                <QrCode className="w-6 h-6" />
-                <span className="text-xs">Instant QR Pay</span>
-              </label>
-
-              <label
-                className={`p-4 rounded-2xl border cursor-pointer flex flex-col items-center text-center gap-2 transition-all ${
                   paymentMethod === 'COD'
-                    ? 'border-zinc-900 dark:border-zinc-100 bg-zinc-100/50 dark:bg-zinc-800/40 text-zinc-900 dark:text-zinc-100 font-bold'
+                    ? 'border-emerald-600 bg-emerald-50/50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 font-bold ring-1 ring-emerald-500/30'
                     : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800'
                 }`}
               >
@@ -369,7 +347,7 @@ export const CheckoutPage: React.FC = () => {
                   className="sr-only"
                 />
                 <Truck className="w-6 h-6" />
-                <span className="text-xs">Cash on Delivery</span>
+                <span className="text-xs">Cash on Delivery (COD)</span>
               </label>
             </div>
 
@@ -396,25 +374,12 @@ export const CheckoutPage: React.FC = () => {
               </div>
             )}
 
-            {/* QR Pay info */}
-            {paymentMethod === 'QR Pay' && (
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-center space-y-2 text-xs">
-                <QrCode className="w-8 h-8 text-zinc-700 dark:text-zinc-300 mx-auto" />
-                <p className="font-semibold text-slate-900 dark:text-white">
-                  VietQR / Bank Transfer
-                </p>
-                <p className="text-slate-500 text-[11px]">
-                  Order will be created with status Pending. Payment reference and transfer QR will be provided upon order completion.
-                </p>
-              </div>
-            )}
-
             {/* COD info */}
             {paymentMethod === 'COD' && (
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-xs text-slate-600 dark:text-slate-300 flex items-center gap-3">
-                <Truck className="w-5 h-5 text-zinc-600 dark:text-zinc-300 flex-shrink-0" />
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-xs text-slate-600 dark:text-slate-300 flex items-center gap-3 animate-fade-in">
+                <Truck className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
                 <span>
-                  You will pay <strong className="text-slate-900 dark:text-white">{formatCurrency(grandTotal)}</strong> directly in cash upon receiving your delivery package.
+                  You will pay <strong className="text-slate-900 dark:text-white">{formatCurrency(grandTotal)}</strong> directly in cash to the courier upon receiving your package.
                 </span>
               </div>
             )}
