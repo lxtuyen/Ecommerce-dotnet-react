@@ -36,7 +36,7 @@ public class Order : BaseModel
     public OrderStatus Status { get; set; } = OrderStatus.Pending;
     public decimal TotalAmount { get; set; }
     public string? Notes { get; set; }
+    public string? CancelReason { get; set; }
     
     public List<OrderItem> OrderItems { get; set; } = new();
 }
-

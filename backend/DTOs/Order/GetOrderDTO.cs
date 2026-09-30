@@ -28,6 +28,7 @@ public class GetOrderDTO
     public string Status { get; set; } = string.Empty;
     public decimal TotalAmount { get; set; }
     public string? Notes { get; set; }
+    public string? CancelReason { get; set; }
     public DateTime CreatedDateTime { get; set; }
     public List<GetOrderItemDTO> OrderItems { get; set; } = new();
 }
@@ -35,4 +36,9 @@ public class GetOrderDTO
 public class UpdateOrderStatusDTO
 {
     public string Status { get; set; } = "Processing";
+}
+
+public class CancelOrderDTO
+{
+    public string? Reason { get; set; }
 }

@@ -64,6 +64,7 @@ export interface Order {
   status: OrderStatus;
   totalAmount: number;
   notes?: string;
+  cancelReason?: string;
   createdDateTime: string;
   orderItems: OrderItem[];
 }

@@ -87,4 +87,27 @@ public class OrderController : ControllerBase
         }
         return Ok(response);
     }
+
+    [HttpPost("{id}/cancel")]
+    [Authorize]
+    public async Task<ActionResult<ServiceResponse<GetOrderDTO>>> CancelOrder(int id, [FromBody] CancelOrderDTO? request)
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+        {
+            return Unauthorized(new ServiceResponse<GetOrderDTO>
+            {
+                Success = false,
+                Message = "Invalid user token."
+            });
+        }
+
+        var isAdmin = User.IsInRole("Admin");
+        var response = await _orderService.CancelOrder(id, userId, request?.Reason, isAdmin);
+        if (!response.Success)
+        {
+            return BadRequest(response);
+        }
+        return Ok(response);
+    }
 }

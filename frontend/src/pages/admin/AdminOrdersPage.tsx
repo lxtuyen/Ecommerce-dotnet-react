@@ -137,7 +137,22 @@ export const AdminOrdersPage: React.FC = () => {
                       {order.shippingAddress}
                     </td>
                     <td className="py-3.5 px-4 font-medium text-slate-700 dark:text-slate-300">
-                      {order.paymentMethod}
+                      <div>{order.paymentMethod}</div>
+                      <div className="mt-1">
+                        {order.paymentStatus === 'Paid' ? (
+                          <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400">
+                            Paid
+                          </span>
+                        ) : order.paymentStatus === 'Refunded' ? (
+                          <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-400">
+                            Refunded
+                          </span>
+                        ) : (
+                          <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400">
+                            Pending
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="py-3.5 px-4 font-extrabold text-slate-900 dark:text-white">
                       {formatCurrency(order.totalAmount)}
@@ -159,6 +174,11 @@ export const AdminOrdersPage: React.FC = () => {
                           </option>
                         ))}
                       </select>
+                      {order.cancelReason && (
+                        <div className="text-[10px] text-rose-500 mt-1 max-w-[150px] truncate" title={order.cancelReason}>
+                          Reason: {order.cancelReason}
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))}

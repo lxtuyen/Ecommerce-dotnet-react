@@ -210,9 +210,20 @@ public class OrderService : IOrderService
                 return response;
             }
 
-            if (Enum.TryParse<OrderStatus>(status, true, out var orderStatus))
+            if (Enum.TryParse<OrderStatus>(status, true, out var newStatus))
             {
-                order.Status = orderStatus;
+                // If transitioning to Cancelled and was not already Cancelled: RESTOCK
+                if (newStatus == OrderStatus.Cancelled && order.Status != OrderStatus.Cancelled)
+                {
+                    await RestockOrderItems(order.OrderItems);
+
+                    if (order.PaymentStatus == PaymentStatus.Paid)
+                    {
+                        order.PaymentStatus = PaymentStatus.Refunded;
+                    }
+                }
+
+                order.Status = newStatus;
             }
             order.UpdatedDateTime = DateTime.UtcNow;
 
@@ -227,6 +238,94 @@ public class OrderService : IOrderService
         }
 
         return response;
+    }
+
+    public async Task<ServiceResponse<GetOrderDTO>> CancelOrder(int id, int userId, string? reason, bool isAdmin)
+    {
+        var response = new ServiceResponse<GetOrderDTO>();
+        try
+        {
+            var order = await _context.Orders
+                .Include(o => o.OrderItems)
+                .FirstOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+            {
+                response.Success = false;
+                response.Message = "Order not found.";
+                return response;
+            }
+
+            // Customer can only cancel their own orders
+            if (!isAdmin && order.UserId != userId)
+            {
+                response.Success = false;
+                response.Message = "You are not authorized to cancel this order.";
+                return response;
+            }
+
+            if (order.Status == OrderStatus.Cancelled)
+            {
+                response.Success = false;
+                response.Message = "This order is already cancelled.";
+                return response;
+            }
+
+            // Customer cannot cancel if order has already shipped or delivered
+            if (order.Status == OrderStatus.Shipped || order.Status == OrderStatus.Delivered)
+            {
+                response.Success = false;
+                response.Message = $"Order is already {order.Status} and cannot be cancelled directly. Please contact support.";
+                return response;
+            }
+
+            // 1. Restock products into inventory
+            await RestockOrderItems(order.OrderItems);
+
+            // 2. Update status and payment status
+            order.Status = OrderStatus.Cancelled;
+            if (order.PaymentStatus == PaymentStatus.Paid)
+            {
+                order.PaymentStatus = PaymentStatus.Refunded;
+            }
+
+            if (!string.IsNullOrWhiteSpace(reason))
+            {
+                order.CancelReason = reason;
+            }
+
+            order.UpdatedDateTime = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            response.Data = MapToGetOrderDTO(order);
+            response.Message = "Order cancelled successfully. Stock has been restored.";
+        }
+        catch (Exception ex)
+        {
+            response.Success = false;
+            response.Message = ex.GetBaseException().Message;
+        }
+
+        return response;
+    }
+
+    private async Task RestockOrderItems(IEnumerable<OrderItem> orderItems)
+    {
+        if (orderItems == null || !orderItems.Any()) return;
+
+        var productIds = orderItems.Select(oi => oi.ProductId).Distinct().ToList();
+        var products = await _context.Products
+            .Where(p => productIds.Contains(p.Id))
+            .ToListAsync();
+
+        foreach (var item in orderItems)
+        {
+            var prod = products.FirstOrDefault(p => p.Id == item.ProductId);
+            if (prod != null)
+            {
+                prod.StockQuantity += item.Quantity;
+            }
+        }
     }
 
     private static GetOrderDTO MapToGetOrderDTO(Order order)
@@ -246,6 +345,7 @@ public class OrderService : IOrderService
             Status = order.Status.ToString(),
             TotalAmount = order.TotalAmount,
             Notes = order.Notes,
+            CancelReason = order.CancelReason,
             CreatedDateTime = order.CreatedDateTime,
             OrderItems = order.OrderItems.Select(oi => new GetOrderItemDTO
             {

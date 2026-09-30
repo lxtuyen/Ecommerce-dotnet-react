@@ -149,6 +149,12 @@ export const ordersApi = {
     });
     return res.data;
   },
+  cancel: async (id: number, reason?: string) => {
+    const res = await apiClient.post<ServiceResponse<Order>>(`/Orders/${id}/cancel`, {
+      reason,
+    });
+    return res.data;
+  },
 };
 
 // Payments API (Stripe)

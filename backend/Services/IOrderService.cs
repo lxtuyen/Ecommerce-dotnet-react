@@ -12,4 +12,5 @@ public interface IOrderService
     Task<ServiceResponse<List<GetOrderDTO>>> GetAllOrders();
     Task<ServiceResponse<GetOrderDTO>> GetOrderById(int id);
     Task<ServiceResponse<GetOrderDTO>> UpdateOrderStatus(int id, string status);
+    Task<ServiceResponse<GetOrderDTO>> CancelOrder(int id, int userId, string? reason, bool isAdmin);
 }
