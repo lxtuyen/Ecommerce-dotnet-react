@@ -96,6 +96,7 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<ICouponService, CouponService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IAddressService, AddressService>();
 
 // Database Context
 builder.Services.AddDbContext<DataContext>(options =>

@@ -11,9 +11,11 @@ import {
   LogOut,
   X,
   Menu,
+  Heart,
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useCartStore } from '@/stores/useCartStore';
+import { useWishlistStore } from '@/stores/useWishlistStore';
 import { useThemeStore } from '@/stores/useThemeStore';
 import { useQuery } from '@tanstack/react-query';
 import { productsApi } from '@/services/api';
@@ -23,6 +25,7 @@ export const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated, isAdmin, logout } = useAuthStore();
   const { toggleDrawer, getTotalItems } = useCartStore();
+  const { getTotalItems: getWishlistTotal } = useWishlistStore();
   const { theme, toggleTheme } = useThemeStore();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -193,6 +196,20 @@ export const Navbar: React.FC = () => {
               )}
             </button>
 
+            {/* Wishlist Button */}
+            <Link
+              to="/wishlist"
+              className="relative p-2.5 rounded-full text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              title="View Wishlist"
+            >
+              <Heart className="w-5 h-5 text-slate-700 dark:text-slate-200 hover:text-rose-500 transition-colors" />
+              {getWishlistTotal() > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-rose-500 text-white text-[11px] font-bold flex items-center justify-center shadow-sm">
+                  {getWishlistTotal()}
+                </span>
+              )}
+            </Link>
+
             {/* Cart Button */}
             <button
               onClick={toggleDrawer}
@@ -242,6 +259,15 @@ export const Navbar: React.FC = () => {
                       {user.role}
                     </span>
                   </div>
+
+                  <Link
+                    to="/wishlist"
+                    onClick={() => setIsUserMenuOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  >
+                    <Heart className="w-4 h-4 text-rose-500" />
+                    My Wishlist ({getWishlistTotal()})
+                  </Link>
 
                   <Link
                     to="/orders"
@@ -305,6 +331,18 @@ export const Navbar: React.FC = () => {
                 className="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
               >
                 Shop All Products
+              </Link>
+              <Link
+                to="/wishlist"
+                onClick={() => setIsMobileNavOpen(false)}
+                className="px-3 py-2 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-between"
+              >
+                <span>My Wishlist</span>
+                {getWishlistTotal() > 0 && (
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500 text-white">
+                    {getWishlistTotal()}
+                  </span>
+                )}
               </Link>
               {isAdmin && (
                 <Link

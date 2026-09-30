@@ -14,6 +14,8 @@ import {
   ServiceResponse,
   StripeConfigResponse,
   User,
+  UserAddress,
+  CreateAddressPayload,
 } from '@/types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:57967/api/v1';
@@ -215,4 +217,25 @@ export const reviewsApi = {
     return res.data;
   },
 };
+
+// Addresses API
+export const addressesApi = {
+  getMyAddresses: async (): Promise<UserAddress[]> => {
+    const res = await apiClient.get<ServiceResponse<UserAddress[]>>('/addresses');
+    return res.data.data || [];
+  },
+  create: async (data: CreateAddressPayload): Promise<ServiceResponse<UserAddress>> => {
+    const res = await apiClient.post<ServiceResponse<UserAddress>>('/addresses', data);
+    return res.data;
+  },
+  setDefault: async (id: number): Promise<ServiceResponse<UserAddress>> => {
+    const res = await apiClient.put<ServiceResponse<UserAddress>>(`/addresses/${id}/default`);
+    return res.data;
+  },
+  delete: async (id: number): Promise<ServiceResponse<boolean>> => {
+    const res = await apiClient.delete<ServiceResponse<boolean>>(`/addresses/${id}`);
+    return res.data;
+  },
+};
+
 

@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Star, ShoppingBag, Check } from 'lucide-react';
+import { Star, ShoppingBag, Check, Heart } from 'lucide-react';
 import { Product } from '@/types';
 import { useCartStore } from '@/stores/useCartStore';
+import { useWishlistStore } from '@/stores/useWishlistStore';
 import { formatCurrency } from '@/utils/formatters';
 
 interface ProductCardProps {
@@ -11,12 +12,20 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addItem, items } = useCartStore();
+  const { toggleItem, isInWishlist } = useWishlistStore();
   const isInCart = items.some((i) => i.productId === product.id);
+  const isWishlisted = isInWishlist(product.id);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     addItem(product, 1);
+  };
+
+  const handleToggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleItem(product);
   };
 
   return (
@@ -35,6 +44,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             {product.categoryName}
           </span>
         )}
+        {/* Wishlist Button */}
+        <button
+          onClick={handleToggleWishlist}
+          className={`absolute top-3 right-3 p-2 rounded-full backdrop-blur-md shadow-sm transition-all duration-300 z-10 ${
+            isWishlisted
+              ? 'bg-rose-500 text-white shadow-rose-500/30 scale-105'
+              : 'bg-white/90 dark:bg-slate-900/90 text-slate-600 dark:text-slate-300 hover:text-rose-500 dark:hover:text-rose-400 hover:scale-110'
+          }`}
+          title={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+        >
+          <Heart className={`w-3.5 h-3.5 ${isWishlisted ? 'fill-white' : ''}`} />
+        </button>
         {/* Stock Badge */}
         {product.stockQuantity <= 5 && product.stockQuantity > 0 && (
           <span className="absolute bottom-3 left-3 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md bg-rose-500 text-white shadow-sm">

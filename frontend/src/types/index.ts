@@ -171,3 +171,27 @@ export interface CreateReviewRequest {
   title: string;
   comment: string;
 }
+
+export interface UserAddress {
+  id: number;
+  userId: number;
+  fullName: string;
+  phone: string;
+  addressLine: string;
+  city: string;
+  zipCode: string;
+  label: string;
+  isDefault: boolean;
+  createdAt: string;
+}
+
+export interface CreateAddressPayload {
+  fullName: string;
+  phone: string;
+  addressLine: string;
+  city: string;
+  zipCode: string;
+  label?: string;
+  isDefault?: boolean;
+}
+

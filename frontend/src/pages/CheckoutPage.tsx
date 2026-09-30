@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCartStore } from '@/stores/useCartStore';
 import { useAuthStore } from '@/stores/useAuthStore';
-import { ordersApi, paymentsApi, couponsApi } from '@/services/api';
-import { PaymentIntentResponse, CouponValidationResult } from '@/types';
+import { ordersApi, paymentsApi, couponsApi, addressesApi } from '@/services/api';
+import { PaymentIntentResponse, CouponValidationResult, UserAddress } from '@/types';
 import { formatCurrency } from '@/utils/formatters';
 import { StripePaymentForm } from '@/components/checkout/StripePaymentForm';
 import {
@@ -19,6 +19,8 @@ import {
   Check,
   X,
   Sparkles,
+  MapPin,
+  BookmarkCheck,
 } from 'lucide-react';
 
 export const CheckoutPage: React.FC = () => {
@@ -52,6 +54,46 @@ export const CheckoutPage: React.FC = () => {
       }));
     }
   }, [user]);
+
+  // Saved Addresses
+  const { data: savedAddresses } = useQuery({
+    queryKey: ['saved-addresses'],
+    queryFn: addressesApi.getMyAddresses,
+    enabled: !!isAuthenticated,
+  });
+
+  const [selectedAddressId, setSelectedAddressId] = useState<number | 'new' | null>(null);
+  const [saveAddressBook, setSaveAddressBook] = useState(false);
+  const [newAddressLabel, setNewAddressLabel] = useState('Home');
+
+  useEffect(() => {
+    if (savedAddresses && savedAddresses.length > 0 && selectedAddressId === null) {
+      const def = savedAddresses.find((a) => a.isDefault) || savedAddresses[0];
+      setSelectedAddressId(def.id);
+      setFormData((prev) => ({
+        ...prev,
+        name: def.fullName || prev.name,
+        phone: def.phone || prev.phone,
+        address: def.addressLine || prev.address,
+        city: def.city || prev.city,
+        zip: def.zipCode || prev.zip,
+      }));
+    } else if (savedAddresses && savedAddresses.length === 0 && selectedAddressId === null) {
+      setSelectedAddressId('new');
+    }
+  }, [savedAddresses, selectedAddressId]);
+
+  const handleSelectAddress = (addr: UserAddress) => {
+    setSelectedAddressId(addr.id);
+    setFormData((prev) => ({
+      ...prev,
+      name: addr.fullName,
+      phone: addr.phone,
+      address: addr.addressLine,
+      city: addr.city,
+      zip: addr.zipCode,
+    }));
+  };
 
   const [paymentMethod, setPaymentMethod] = useState<'Credit Card' | 'COD'>('Credit Card');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -184,6 +226,24 @@ export const CheckoutPage: React.FC = () => {
 
     const res = await ordersApi.create(payload);
     if (res.success && res.data) {
+      // Save address to Address Book if requested
+      if (saveAddressBook && (selectedAddressId === 'new' || !savedAddresses?.length)) {
+        try {
+          await addressesApi.create({
+            fullName: formData.name,
+            phone: formData.phone,
+            addressLine: formData.address,
+            city: formData.city,
+            zipCode: formData.zip,
+            label: newAddressLabel,
+            isDefault: !savedAddresses || savedAddresses.length === 0,
+          });
+          queryClient.invalidateQueries({ queryKey: ['saved-addresses'] });
+        } catch (e) {
+          console.error('Failed to save shipping address', e);
+        }
+      }
+
       queryClient.invalidateQueries({ queryKey: ['all-orders'] });
       queryClient.invalidateQueries({ queryKey: ['my-orders'] });
       clearCart();
@@ -245,112 +305,212 @@ export const CheckoutPage: React.FC = () => {
               1. Shipping Address
             </h2>
 
-            {errorMsg && (
-              <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 text-xs font-semibold flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                <span>{errorMsg}</span>
+            {/* Saved Address Cards */}
+            {savedAddresses && savedAddresses.length > 0 && (
+              <div className="space-y-3 pb-4 border-b border-slate-200 dark:border-slate-800">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    Saved Shipping Addresses
+                  </span>
+                  <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                    {savedAddresses.length} saved
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {savedAddresses.map((addr) => {
+                    const isSelected = selectedAddressId === addr.id;
+                    return (
+                      <div
+                        key={addr.id}
+                        onClick={() => handleSelectAddress(addr)}
+                        className={`p-3.5 rounded-2xl border cursor-pointer transition-all text-left relative ${
+                          isSelected
+                            ? 'border-emerald-500 bg-emerald-50/40 dark:bg-emerald-950/20 ring-1 ring-emerald-500/40'
+                            : 'border-slate-200 dark:border-slate-700/80 hover:border-slate-300 dark:hover:border-slate-600 bg-slate-50/50 dark:bg-slate-800/40'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <span className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                            <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                            {addr.label || 'Home'}
+                          </span>
+                          {addr.isDefault && (
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">
+                              Default
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-xs text-slate-700 dark:text-slate-200 font-semibold truncate">
+                          {addr.fullName} • {addr.phone}
+                        </div>
+                        <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                          {addr.addressLine}, {addr.city} {addr.zipCode}
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  <div
+                    onClick={() => {
+                      setSelectedAddressId('new');
+                      setFormData((prev) => ({
+                        ...prev,
+                        phone: '',
+                        address: '',
+                        city: '',
+                        zip: '',
+                      }));
+                    }}
+                    className={`p-3.5 rounded-2xl border border-dashed cursor-pointer transition-all flex items-center justify-center gap-2 text-xs font-bold ${
+                      selectedAddressId === 'new'
+                        ? 'border-emerald-500 bg-emerald-50/30 text-emerald-700 dark:text-emerald-400'
+                        : 'border-slate-300 dark:border-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/40'
+                    }`}
+                  >
+                    <span>+ Enter Different Address</span>
+                  </div>
+                </div>
               </div>
             )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g. John Doe"
-                  className="w-full px-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
-                />
+            {/* Address Input Form */}
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="e.g. John Doe"
+                    className="w-full px-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="e.g. john@example.com"
+                    className="w-full px-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
+                  />
+                </div>
               </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
+                    Phone Number *
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    placeholder="e.g. +1 555-0199"
+                    className="w-full px-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
+                    Street Address *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.address}
+                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                    placeholder="e.g. 123 Tech Avenue, Apt 4B"
+                    className="w-full px-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
+                    City
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.city}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    placeholder="e.g. San Francisco"
+                    className="w-full px-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
+                    Postal Code
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.zip}
+                    onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
+                    placeholder="e.g. 94107"
+                    className="w-full px-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              {/* Save Address Option if entering new address */}
+              {(selectedAddressId === 'new' || !savedAddresses?.length) && (
+                <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                  <label className="flex items-center gap-2.5 cursor-pointer text-xs font-semibold text-slate-800 dark:text-slate-200">
+                    <input
+                      type="checkbox"
+                      checked={saveAddressBook}
+                      onChange={(e) => setSaveAddressBook(e.target.checked)}
+                      className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                    />
+                    <span>Save this address to my Address Book</span>
+                  </label>
+
+                  {saveAddressBook && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] text-slate-400 font-medium">Tag:</span>
+                      {['Home', 'Office', 'Other'].map((lbl) => (
+                        <button
+                          key={lbl}
+                          type="button"
+                          onClick={() => setNewAddressLabel(lbl)}
+                          className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-colors ${
+                            newAddressLabel === lbl
+                              ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900'
+                              : 'bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600'
+                          }`}
+                        >
+                          {lbl}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
 
               <div>
                 <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
-                  Email Address *
+                  Order Delivery Notes (Optional)
                 </label>
-                <input
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  placeholder="e.g. john@example.com"
+                <textarea
+                  rows={2}
+                  value={formData.notes}
+                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                  placeholder="Special instructions for courier (e.g. gate code, leave at reception)..."
                   className="w-full px-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
                 />
               </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
-                  Phone Number *
-                </label>
-                <input
-                  type="tel"
-                  required
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  placeholder="e.g. +1 555-0199"
-                  className="w-full px-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
-                  Street Address *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.address}
-                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  placeholder="e.g. 123 Tech Avenue, Apt 4B"
-                  className="w-full px-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
-                  City
-                </label>
-                <input
-                  type="text"
-                  value={formData.city}
-                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  placeholder="e.g. San Francisco"
-                  className="w-full px-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
-                  Postal Code
-                </label>
-                <input
-                  type="text"
-                  value={formData.zip}
-                  onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
-                  placeholder="e.g. 94107"
-                  className="w-full px-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
-                Order Delivery Notes (Optional)
-              </label>
-              <textarea
-                rows={2}
-                value={formData.notes}
-                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                placeholder="Special instructions for the courier..."
-                className="w-full px-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:border-zinc-500 text-slate-900 dark:text-white"
-              />
             </div>
           </div>
 

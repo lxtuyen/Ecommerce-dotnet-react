@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { productsApi } from '@/services/api';
 import { useCartStore } from '@/stores/useCartStore';
+import { useWishlistStore } from '@/stores/useWishlistStore';
 import { formatCurrency } from '@/utils/formatters';
 import { ProductCard } from '@/components/products/ProductCard';
 import { ProductReviewsSection } from '@/components/products/ProductReviewsSection';
@@ -16,6 +17,7 @@ import {
   RotateCcw,
   ArrowLeft,
   Check,
+  Heart,
 } from 'lucide-react';
 
 export const ProductDetailPage: React.FC = () => {
@@ -25,6 +27,8 @@ export const ProductDetailPage: React.FC = () => {
 
   const [quantity, setQuantity] = useState(1);
   const { addItem, items } = useCartStore();
+  const { toggleItem, isInWishlist } = useWishlistStore();
+  const isWishlisted = isInWishlist(productId);
 
   const { data: product, isLoading } = useQuery({
     queryKey: ['product', productId],
@@ -174,20 +178,34 @@ export const ProductDetailPage: React.FC = () => {
             </div>
 
             {/* CTAs */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
-              <button
-                onClick={handleAddToCart}
-                className="py-3.5 px-6 rounded-xl font-bold text-sm bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white shadow-xl shadow-zinc-950/20 flex items-center justify-center gap-2 transition-all"
-              >
-                {isInCart ? <Check className="w-4 h-4" /> : <ShoppingBag className="w-4 h-4" />}
-                <span>{isInCart ? 'Added To Cart' : 'Add to Cart'}</span>
-              </button>
+            <div className="flex items-center gap-3 pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 flex-1">
+                <button
+                  onClick={handleAddToCart}
+                  className="py-3.5 px-6 rounded-xl font-bold text-sm bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 shadow-xl shadow-zinc-950/20 flex items-center justify-center gap-2 transition-all"
+                >
+                  {isInCart ? <Check className="w-4 h-4" /> : <ShoppingBag className="w-4 h-4" />}
+                  <span>{isInCart ? 'Added To Cart' : 'Add to Cart'}</span>
+                </button>
+
+                <button
+                  onClick={handleBuyNow}
+                  className="py-3.5 px-6 rounded-xl font-bold text-sm bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 shadow-lg transition-colors flex items-center justify-center"
+                >
+                  Buy Now
+                </button>
+              </div>
 
               <button
-                onClick={handleBuyNow}
-                className="py-3.5 px-6 rounded-xl font-bold text-sm bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 shadow-lg transition-colors flex items-center justify-center"
+                onClick={() => product && toggleItem(product)}
+                className={`p-3.5 rounded-xl border transition-all flex items-center justify-center ${
+                  isWishlisted
+                    ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-300 dark:border-rose-800 text-rose-600 dark:text-rose-400 shadow-sm'
+                    : 'border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'
+                }`}
+                title={isWishlisted ? 'Saved in Wishlist' : 'Add to Wishlist'}
               >
-                Buy Now
+                <Heart className={`w-5 h-5 ${isWishlisted ? 'fill-rose-500 text-rose-500' : ''}`} />
               </button>
             </div>
           </div>

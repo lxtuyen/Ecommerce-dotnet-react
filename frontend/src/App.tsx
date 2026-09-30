@@ -16,6 +16,7 @@ import { CartPage } from '@/pages/CartPage';
 import { CheckoutPage } from '@/pages/CheckoutPage';
 import { OrderSuccessPage } from '@/pages/OrderSuccessPage';
 import { OrdersPage } from '@/pages/OrdersPage';
+import { WishlistPage } from '@/pages/WishlistPage';
 import { LoginPage } from '@/pages/LoginPage';
 import { RegisterPage } from '@/pages/RegisterPage';
 
@@ -43,6 +44,7 @@ export const App: React.FC = () => {
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/order-success/:id" element={<OrderSuccessPage />} />
             <Route path="/orders" element={<OrdersPage />} />
+            <Route path="/wishlist" element={<WishlistPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
 
